@@ -13,17 +13,17 @@ const config = require('@vue/cli-service/webpack.config')
 
 const app = express()
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://node-project-dc11c.firebaseio.com'
-})
-
 const compiler = webpack(config)
 app.use(webpackDevMiddleware(compiler, {
   publicPath: config.output.publicPath,
   stats: { colors: true }
 }))
 app.use(webpackHotMiddleware(compiler))
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://node-project-dc11c.firebaseio.com'
+})
 
 app.use(logger('dev'))
 app.use(express.json())
