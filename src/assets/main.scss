@@ -1,1 +1,8 @@
 @import "~bootstrap/scss/bootstrap";
+body, html {
+  font-family: 'Microsoft JhengHei';
+}
+body{
+  min-width: 375px;
+  background-color: #e3e3e3;
+}
