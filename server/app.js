@@ -3,16 +3,17 @@ const express = require('express')
 const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
-const admin = require('firebase-admin')
-const serviceAccount = require('./node-project-dc11c-firebase-adminsdk-h26op-4c749a0779.json')
 
 const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const config = require('@vue/cli-service/webpack.config')
 
+const ledgerRouter = require('./routes/ledger')
+
 const app = express()
 
+// webpack config
 const compiler = webpack(config)
 app.use(webpackDevMiddleware(compiler, {
   publicPath: config.output.publicPath,
@@ -20,16 +21,14 @@ app.use(webpackDevMiddleware(compiler, {
 }))
 app.use(webpackHotMiddleware(compiler))
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://node-project-dc11c.firebaseio.com'
-})
-
+// middleware
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, '../public')))
+
+app.use('/ledger', ledgerRouter)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

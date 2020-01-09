@@ -14,7 +14,7 @@ export default {
 .actionBar{
   height: 55px;
   .add{
-    background: #272b30;
+    background: #343a40;
     position: absolute;
     left: 0;
     right: 0;
@@ -23,6 +23,10 @@ export default {
     height: 80px;
     margin: auto;
     cursor: pointer;
+    transition: 0.5s;
+    &:hover{
+      background: #272b30;
+    }
   }
 }
 </style>

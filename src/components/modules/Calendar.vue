@@ -60,16 +60,21 @@
         </h4>
         <hr />
         <div class="d-flex justify-content-between align-items-center">
-          <h5 class="my-3 font-weight-normal">當天盈餘</h5>
-          <h4 class="mb-0 font-weight-normal text-center">＄11,000</h4>
-        </div>
-        <div class="d-flex justify-content-between align-items-center">
           <h5 class="my-3 font-weight-normal">當天收入</h5>
-          <h4 class="mb-0 font-weight-normal text-center">＄11,000</h4>
+          <h4 class="mb-0 font-weight-normal text-center">{{ income | currency }}</h4>
         </div>
         <div class="d-flex justify-content-between align-items-center">
           <h5 class="my-3 font-weight-normal">當天支出</h5>
-          <h4 class="mb-0 font-weight-normal text-center">＄11,000</h4>
+          <h4 class="mb-0 font-weight-normal text-center">{{ pay | currency }}</h4>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="my-3 font-weight-normal">當天總收支</h5>
+          <h4
+            class="mb-0 font-weight-normal text-center"
+            :class="{'text-danger': income < pay, 'text-success': income > pay}"
+          >
+            <span v-if="income < pay">-</span>{{ surplus | currency }}
+          </h4>
         </div>
       </div>
     </Module>
@@ -78,6 +83,7 @@
 
 <script>
 import Module from '@/components/element/Module'
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'Calendar',
   components: {
@@ -106,6 +112,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(['dailyData']),
     isToday () {
       if (this.datePick.year === this.today.year && this.datePick.month === this.today.month) {
         if (this.datePick.date === this.today.date) return true
@@ -132,6 +139,27 @@ export default {
       } else {
         return this.day[this.datePick.month]
       }
+    },
+    income () {
+      let income = 0
+      if (this.dailyData.length) {
+        this.dailyData.forEach(item => {
+          if (item.sheet === 'income') income = income + item.cost
+        })
+      }
+      return income
+    },
+    pay () {
+      let pay = 0
+      if (this.dailyData.length) {
+        this.dailyData.forEach(item => {
+          if (item.sheet === 'pay') pay = pay + item.cost
+        })
+      }
+      return pay
+    },
+    surplus () {
+      return Math.abs(this.income - this.pay)
     }
   },
   watch: {
@@ -139,14 +167,20 @@ export default {
       let day = new Date()
       day.setFullYear(this.datePick.year, this.datePick.month, 1)
       this.firstDay = day.getDay() === 0 ? 6 : day.getDay()
+      this.GET_DAILY_DATA(this.datePick)
     },
     'datePick.month' () {
       let day = new Date()
       day.setFullYear(this.datePick.year, this.datePick.month, 1)
       this.firstDay = day.getDay() === 0 ? 6 : day.getDay()
+      this.GET_DAILY_DATA(this.datePick)
+    },
+    'datePick.date' () {
+      this.GET_DAILY_DATA(this.datePick)
     }
   },
   methods: {
+    ...mapActions(['GET_DAILY_DATA']),
     pickDate (date) {
       this.datePick.date = date
     },
