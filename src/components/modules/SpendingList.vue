@@ -10,7 +10,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text" for="sheet">收支</label>
             </div>
-            <select class="custom-select" id="sheet" name="sheet" v-model="filter.sheet">
+            <select class="custom-select" id="sheet" name="sheet" v-model="filter.sheet" @change="filter.type = 'all'">
               <option value="all">全部</option>
               <option value="income">收入</option>
               <option value="pay">支出</option>
@@ -87,7 +87,7 @@ export default {
     ...mapState(['dailyData', 'typeList']),
     filterType () {
       return {
-        all: [1, 2, 3, 4, 5],
+        all: [],
         income: this.typeList.income,
         pay: this.typeList.pay
       }
