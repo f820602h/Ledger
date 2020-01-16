@@ -17,12 +17,12 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 const db = firebase.firestore().collection('ledger')
 
-router.get('/:data', function (req, res) {
-  const ref = db.doc('f820602h@yahoo.com.tw')
+router.get('/:account', function (req, res) {
+  const ref = db.doc(req.params.account)
   ref.get().then(data => {
     res.json({
       success: true,
-      body: data.data()[req.params.data]
+      body: data.data()
     })
   }).catch(() => {
     res.json({
@@ -31,45 +31,20 @@ router.get('/:data', function (req, res) {
   })
 })
 
-router.get('/account', function (req, res) {
-  const ref = db.doc('f820602h@yahoo.com.tw')
-  ref.get().then(data => {
-    res.json({
-      success: true,
-      body: data.data().account
+router.post('/:account', function (req, res) {
+  const ref = db.doc(req.params.account)
+  ref.set({
+    ledger: req.body
+  }, { merge: true })
+    .then(() => {
+      res.json({
+        success: true
+      })
+    }).catch(() => {
+      res.json({
+        success: false
+      })
     })
-  }).catch(() => {
-    res.json({
-      success: false
-    })
-  })
 })
 
-router.get('/save', function (req, res) {
-  const ref = db.doc('f820602h@yahoo.com.tw')
-  ref.get().then(data => {
-    res.json({
-      success: true,
-      body: data.data().save
-    })
-  }).catch(() => {
-    res.json({
-      success: false
-    })
-  })
-})
-
-router.get('/type', function (req, res) {
-  const ref = db.doc('f820602h@yahoo.com.tw')
-  ref.get().then(data => {
-    res.json({
-      success: true,
-      body: data.data().type
-    })
-  }).catch(() => {
-    res.json({
-      success: false
-    })
-  })
-})
 module.exports = router

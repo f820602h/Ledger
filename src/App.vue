@@ -25,15 +25,13 @@ export default {
     Modal
   },
   mounted () {
-    this.GET_ACCOUNT_DATA()
-    this.GET_SAVE()
-    this.GET_TODAY_DATA()
-    this.GET_TYPE_LIST()
+    this.INIT_DATA()
   },
   methods: {
-    ...mapActions(['GET_ACCOUNT_DATA', 'GET_SAVE', 'GET_TYPE_LIST', 'GET_TODAY_DATA']),
+    ...mapActions(['INIT_DATA']),
     toggleModal (state) {
       this.isShow = state
+      document.body.style.overflow = state ? 'hidden' : ''
     }
   }
 }

@@ -83,7 +83,7 @@
 
 <script>
 import Module from '@/components/element/Module'
-import { mapState, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Calendar',
   components: {
@@ -112,7 +112,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['dailyData']),
+    ...mapGetters({
+      dailyData: 'GET_DAILY_DATA'
+    }),
     isToday () {
       if (this.datePick.year === this.today.year && this.datePick.month === this.today.month) {
         if (this.datePick.date === this.today.date) return true
@@ -144,7 +146,7 @@ export default {
       let income = 0
       if (this.dailyData.length) {
         this.dailyData.forEach(item => {
-          if (item.sheet === 'income') income = income + item.cost
+          if (item.sheet === 'income') income = income + Number(item.cost)
         })
       }
       return income
@@ -153,7 +155,7 @@ export default {
       let pay = 0
       if (this.dailyData.length) {
         this.dailyData.forEach(item => {
-          if (item.sheet === 'pay') pay = pay + item.cost
+          if (item.sheet === 'pay') pay = pay + Number(item.cost)
         })
       }
       return pay
@@ -167,20 +169,20 @@ export default {
       let day = new Date()
       day.setFullYear(this.datePick.year, this.datePick.month, 1)
       this.firstDay = day.getDay() === 0 ? 6 : day.getDay()
-      this.GET_DAILY_DATA(this.datePick)
+      this.GET_CURRENT_DATA(this.datePick)
     },
     'datePick.month' () {
       let day = new Date()
       day.setFullYear(this.datePick.year, this.datePick.month, 1)
       this.firstDay = day.getDay() === 0 ? 6 : day.getDay()
-      this.GET_DAILY_DATA(this.datePick)
+      this.GET_CURRENT_DATA(this.datePick)
     },
     'datePick.date' () {
-      this.GET_DAILY_DATA(this.datePick)
+      this.GET_CURRENT_DATA(this.datePick)
     }
   },
   methods: {
-    ...mapActions(['GET_DAILY_DATA']),
+    ...mapActions(['GET_CURRENT_DATA']),
     pickDate (date) {
       this.datePick.date = date
     },

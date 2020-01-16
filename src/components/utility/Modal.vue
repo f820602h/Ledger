@@ -73,7 +73,7 @@
 
 <script>
 import { required, numeric, maxLength } from 'vuelidate/lib/validators'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'Modal',
   data () {
@@ -139,16 +139,32 @@ export default {
         income: this.typeList.income,
         pay: this.typeList.pay
       }
+    },
+    dateTimestamp () {
+      return new Date(this.newData.date).getTime()
+    },
+    Timestamp () {
+      return new Date(`${this.newData.date} ${this.newData.time}`).getTime()
     }
   },
   methods: {
+    ...mapActions(['ADD_NEW_DATA']),
     toggleModal () {
       this.$emit('toggleModal', false)
     },
     addData () {
       this.$v.newData.$touch()
       if (!this.$v.newData.$invalid) {
-        // TODO add new data
+        let data = {
+          date: this.dateTimestamp,
+          time: this.Timestamp,
+          sheet: this.newData.sheet,
+          type: this.newData.type,
+          cost: this.newData.cost,
+          description: this.newData.description
+        }
+        this.ADD_NEW_DATA(data)
+        this.toggleModal()
       }
     }
   }
@@ -161,7 +177,7 @@ export default {
     margin: 4px 0;
   }
   .cover-bg{
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     z-index: 1050;

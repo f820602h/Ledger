@@ -38,11 +38,11 @@
           </div>
         </div>
         <hr>
-        <div v-if="dailyData">
+        <div v-if="filterSortDailyData">
           <div
             class="listItem row align-items-center no-gutters"
-            v-for="list in dailyData"
-            :key="list.time"
+            v-for="(list, index) in filterSortDailyData"
+            :key="`${list.time + index}`"
           >
             <div class="col-6 col-md-3">
               <h4 class="mb-0 text-md-center">{{list.type}}</h4>
@@ -68,7 +68,7 @@
 
 <script>
 import Module from '@/components/element/Module'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'SpendingList',
   components: {
@@ -84,13 +84,42 @@ export default {
     }
   },
   computed: {
-    ...mapState(['dailyData', 'typeList']),
+    ...mapState(['typeList']),
+    ...mapGetters({
+      dailyData: 'GET_DAILY_DATA'
+    }),
     filterType () {
       return {
         all: [],
         income: this.typeList.income,
         pay: this.typeList.pay
       }
+    },
+    filterSheetDailyData () {
+      if (this.filter.sheet === 'all') return this.dailyData
+      else {
+        return this.dailyData.filter((item) => {
+          return item.sheet === this.filter.sheet
+        })
+      }
+    },
+    filterTypeDailyData () {
+      if (this.filter.type === 'all') return this.filterSheetDailyData
+      else {
+        return this.filterSheetDailyData.filter((item) => {
+          return item.type === this.filter.type
+        })
+      }
+    },
+    filterSortDailyData () {
+      let finalData = this.filterTypeDailyData.slice()
+      finalData.sort((a, b) => {
+        if (this.filter.sort === 'timeAsc') return a.time - b.time
+        if (this.filter.sort === 'timeDesc') return b.time - a.time
+        if (this.filter.sort === 'costAsc') return a.cost - b.cost
+        if (this.filter.sort === 'costDesc') return b.cost - a.cost
+      })
+      return finalData
     }
   }
 }

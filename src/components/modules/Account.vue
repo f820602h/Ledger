@@ -41,7 +41,7 @@ export default {
       let income = 0
       if (this.todayData.length) {
         this.todayData.forEach(item => {
-          if (item.sheet === 'income') income = income + item.cost
+          if (item.sheet === 'income') income = income + Number(item.cost)
         })
       }
       return income
@@ -50,7 +50,7 @@ export default {
       let pay = 0
       if (this.todayData.length) {
         this.todayData.forEach(item => {
-          if (item.sheet === 'pay') pay = pay + item.cost
+          if (item.sheet === 'pay') pay = pay + Number(item.cost)
         })
       }
       return pay
