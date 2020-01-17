@@ -29,14 +29,17 @@
 
 <script>
 import Module from '@/components/element/Module'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Account',
   components: {
     Module
   },
   computed: {
-    ...mapState(['todayData', 'save']),
+    ...mapState(['save']),
+    ...mapGetters({
+      todayData: 'GET_TODAY_DATA'
+    }),
     income () {
       let income = 0
       if (this.todayData.length) {

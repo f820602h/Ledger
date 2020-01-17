@@ -9,17 +9,16 @@ Vue.use(Vuelidate)
 export default new Vuex.Store({
   state: {
     user: 'f820602h@yahoo.com.tw',
-    todayTimestamp: '',
+    today: '',
     currentDate: '',
     save: 0,
     ledger: [],
     account: {},
-    typeList: {},
-    todayData: []
+    typeList: {}
   },
   mutations: {
-    SET_TODAY_TIME_STAMP (state, payload) {
-      state.todayTimestamp = payload
+    SET_TODAY (state, payload) {
+      state.today = payload
     },
     SET_LEDGER (state, payload) {
       state.ledger = payload
@@ -32,9 +31,6 @@ export default new Vuex.Store({
     },
     SET_TYPE_LIST (state, payload) {
       state.typeList = payload
-    },
-    SET_TODAY_DATA (state, payload) {
-      state.todayData = payload
     },
     SET_CURRENT_DATA (state, payload) {
       state.currentDate = payload
@@ -50,7 +46,6 @@ export default new Vuex.Store({
             commit('SET_ACCOUNT_DATA', res.data.body.account)
             commit('SET_SAVE', res.data.body.save)
             commit('SET_TYPE_LIST', res.data.body.type)
-            dispatch('GET_TODAY_DATA')
           }
         })
     },
@@ -63,15 +58,8 @@ export default new Vuex.Store({
         date: whatDay.getDate()
       }
       const timestamp = new Date(`${today.year}-${today.month + 1}-${today.date}`).getTime()
-      commit('SET_TODAY_TIME_STAMP', timestamp)
+      commit('SET_TODAY', timestamp)
       commit('SET_CURRENT_DATA', timestamp)
-    },
-
-    GET_TODAY_DATA ({ state, commit }) {
-      let data = state.ledger.filter((item) => {
-        return item.date === state.todayTimestamp
-      })
-      if (data) commit('SET_TODAY_DATA', data)
     },
 
     GET_CURRENT_DATA ({ commit }, date) {
@@ -79,12 +67,51 @@ export default new Vuex.Store({
       commit('SET_CURRENT_DATA', timestamp)
     },
 
-    ADD_NEW_DATA ({ state }, data) {
-      state.ledger.push(data)
-      axios.post(`${process.env.VUE_APP_URL}/ledger/${state.user}`, state.ledger)
+    ADD_NEW_DATA ({ state, commit }, data) {
+      let newSave = data.sheet === 'pay' ? state.save - data.cost : state.save + data.cost
+      let newLedger = state.ledger.slice()
+      newLedger.push(data)
+      axios.post(`${process.env.VUE_APP_URL}/ledger/${state.user}`, { newLedger, newSave })
+        .then(() => {
+          commit('SET_LEDGER', newLedger)
+          commit('SET_SAVE', newSave)
+        })
+    },
+
+    EDIT_DATA ({ state, commit }, data) {
+      let newSave = data.old.sheet === 'pay' ? state.save + data.old.cost : state.save - data.old.cost
+      newSave = data.new.sheet === 'pay' ? newSave - data.new.cost : newSave + data.new.cost
+      let newLedger = state.ledger.slice().filter((item) => {
+        return item.updateTime !== data.old.updateTime
+      })
+      newLedger.push(data.new)
+      axios.post(`${process.env.VUE_APP_URL}/ledger/${state.user}`, { newLedger, newSave })
+        .then(() => {
+          commit('SET_LEDGER', newLedger)
+          commit('SET_SAVE', newSave)
+        })
+    },
+
+    DELE_DATA ({ state, commit }, data) {
+      let newSave = data.sheet === 'pay' ? state.save + data.cost : state.save - data.cost
+      let newLedger = state.ledger.slice().filter((item) => {
+        return item.updateTime !== data.updateTime
+      })
+      axios.post(`${process.env.VUE_APP_URL}/ledger/${state.user}`, { newLedger, newSave })
+        .then(() => {
+          commit('SET_LEDGER', newLedger)
+          commit('SET_SAVE', newSave)
+          console.log('delete')
+        })
     }
   },
   getters: {
+    GET_TODAY_DATA (state) {
+      let data = state.ledger.filter((item) => {
+        return item.date === state.today
+      })
+      return data
+    },
     GET_DAILY_DATA (state) {
       let data = state.ledger.filter((item) => {
         return item.date === state.currentDate

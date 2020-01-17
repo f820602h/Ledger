@@ -4,8 +4,8 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">新增帳目</h5>
-        <button type="button" class="close" @click="toggleModal"><span>&times;</span></button>
+        <h5 class="modal-title" id="exampleModalLabel">編輯帳目</h5>
+        <button type="button" class="close" @click="toggleEditPopup(false)"><span>&times;</span></button>
       </div>
       <div class="modal-body">
         <form>
@@ -62,8 +62,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" @click="toggleModal">取消</button>
-        <button type="button" class="btn btn-primary" @click="addData">新增</button>
+        <button type="button" class="btn btn-secondary" @click="toggleEditPopup(false)">取消</button>
+        <button type="button" class="btn btn-primary" @click="editData">儲存</button>
       </div>
     </div>
   </div>
@@ -75,16 +75,22 @@
 import { required, numeric, maxLength } from 'vuelidate/lib/validators'
 import { mapState, mapActions } from 'vuex'
 export default {
-  name: 'Modal',
+  name: 'EditPopup',
+  props: {
+    term: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data () {
     return {
       newData: {
-        date: '',
-        time: '',
-        sheet: '',
-        type: '',
-        cost: '',
-        description: ''
+        date: this.term.date,
+        time: this.term.time,
+        sheet: this.term.sheet,
+        type: this.term.type,
+        cost: this.term.cost,
+        description: this.term.description
       }
     }
   },
@@ -148,23 +154,27 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['ADD_NEW_DATA']),
-    toggleModal () {
-      this.$emit('toggleModal', false)
+    ...mapActions(['EDIT_DATA']),
+    toggleEditPopup (state) {
+      this.$emit('toggleEditPopup', state)
     },
-    addData () {
+    editData () {
       this.$v.newData.$touch()
       if (!this.$v.newData.$invalid) {
         let data = {
-          date: this.dateTimestamp,
-          time: this.Timestamp,
-          sheet: this.newData.sheet,
-          type: this.newData.type,
-          cost: this.newData.cost,
-          description: this.newData.description
+          old: this.term,
+          new: {
+            date: this.dateTimestamp,
+            time: this.Timestamp,
+            sheet: this.newData.sheet,
+            type: this.newData.type,
+            cost: Number(this.newData.cost),
+            description: this.newData.description,
+            updateTime: new Date().getTime()
+          }
         }
-        this.ADD_NEW_DATA(data)
-        this.toggleModal()
+        this.EDIT_DATA(data)
+        this.toggleEditPopup(false)
       }
     }
   }

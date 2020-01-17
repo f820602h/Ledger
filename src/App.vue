@@ -4,33 +4,33 @@
       <router-view/>
     </div>
     <div class="replace"></div>
-    <ActionBar @toggleModal="toggleModal"/>
-    <Modal v-if="isShow" @toggleModal="toggleModal"/>
+    <ActionBar @toggleAddPopup="toggleAddPopup"/>
+    <AddPopup v-if="AddPopupIsShow" @toggleAddPopup="toggleAddPopup"/>
   </div>
 </template>
 
 <script>
 import ActionBar from '@/components/utility/ActionBar'
-import Modal from '@/components/utility/Modal'
+import AddPopup from '@/components/utility/AddPopup'
 import { mapActions } from 'vuex'
 export default {
   name: 'App',
   data () {
     return {
-      isShow: false
+      AddPopupIsShow: false
     }
   },
   components: {
     ActionBar,
-    Modal
+    AddPopup
   },
   mounted () {
     this.INIT_DATA()
   },
   methods: {
     ...mapActions(['INIT_DATA']),
-    toggleModal (state) {
-      this.isShow = state
+    toggleAddPopup (state) {
+      this.AddPopupIsShow = state
       document.body.style.overflow = state ? 'hidden' : ''
     }
   }

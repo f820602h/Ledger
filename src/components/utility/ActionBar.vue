@@ -2,7 +2,7 @@
   <div class="actionBar fixed-bottom bg-dark">
     <h2
       class="add rounded-circle text-white d-flex justify-content-center align-items-center"
-      @click="toggleModal"
+      @click="toggleAddPopup(true)"
     >
       ＋
     </h2>
@@ -13,8 +13,8 @@
 export default {
   name: 'ActionBar',
   methods: {
-    toggleModal () {
-      this.$emit('toggleModal', true)
+    toggleAddPopup (state) {
+      this.$emit('toggleAddPopup', state)
     }
   }
 }

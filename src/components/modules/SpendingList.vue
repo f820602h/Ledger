@@ -38,41 +38,50 @@
           </div>
         </div>
         <hr>
-        <div v-if="filterSortDailyData">
+        <div v-if="!filterSortDailyData.length">
+          <h4 class="text-center mt-4 mb-0">目前沒有任何帳目喔！</h4>
+        </div>
+        <div v-if="filterSortDailyData.length">
           <div
             class="listItem row align-items-center no-gutters"
-            v-for="(list, index) in filterSortDailyData"
-            :key="`${list.time + index}`"
+            v-for="term in filterSortDailyData"
+            :key="term.updateTime"
           >
             <div class="col-6 col-md-3">
-              <h4 class="mb-0 text-md-center">{{list.type}}</h4>
+              <h4 class="mb-0 text-md-center">{{term.type}}</h4>
             </div>
             <div class="col-6 col-md-3 order-md-1">
-              <h4 class="mb-0 text-right text-md-center">{{list.cost | currency}}</h4>
+              <h4 class="mb-0 text-right text-md-center">{{term.cost | currency}}</h4>
             </div>
             <div class="col-12 col-md-4">
-              <p class="my-1">{{list.time | time}}</p>
-              <p class="my-1">{{list.description}}</p>
+              <p class="my-1">{{term.time | time}}</p>
+              <p class="my-1">{{term.description}}</p>
             </div>
             <div class="col-12 col-md-2 text-right order-md-2">
-              <button class="btn btn-sm btn-info my-1">編輯</button>
-              <button class="btn btn-sm btn-danger ml-1 my-1">刪除</button>
+              <button class="btn btn-sm btn-info my-1" @click="editData(term)">編輯</button>
+              <button class="btn btn-sm btn-danger ml-1 my-1" @click="deleData(term)">刪除</button>
             </div>
             <hr class="col-12 order-5">
           </div>
         </div>
       </div>
     </Module>
+    <EditPopup v-if="EditPopupIsShow" @toggleEditPopup="toggleEditPopup" :term="editTerm"/>
+    <DelePopup v-if="delePopupIsShow" @toggleDelePopup="toggleDelePopup" :term="deleTerm"/>
   </div>
 </template>
 
 <script>
+import EditPopup from '@/components/utility/EditPopup'
+import DelePopup from '@/components/utility/DelePopup'
 import Module from '@/components/element/Module'
 import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'SpendingList',
   components: {
-    Module
+    Module,
+    EditPopup,
+    DelePopup
   },
   data () {
     return {
@@ -80,7 +89,11 @@ export default {
         sheet: 'all',
         type: 'all',
         sort: 'timeAsc'
-      }
+      },
+      editTerm: {},
+      deleTerm: {},
+      EditPopupIsShow: false,
+      delePopupIsShow: false
     }
   },
   computed: {
@@ -120,6 +133,22 @@ export default {
         if (this.filter.sort === 'costDesc') return b.cost - a.cost
       })
       return finalData
+    }
+  },
+  methods: {
+    editData (term) {
+      this.editTerm = term
+      this.toggleEditPopup(true)
+    },
+    toggleEditPopup (state) {
+      this.EditPopupIsShow = state
+    },
+    deleData (term) {
+      this.deleTerm = term
+      this.toggleDelePopup(true)
+    },
+    toggleDelePopup (state) {
+      this.delePopupIsShow = state
     }
   }
 }

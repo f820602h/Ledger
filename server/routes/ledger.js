@@ -34,7 +34,8 @@ router.get('/:account', function (req, res) {
 router.post('/:account', function (req, res) {
   const ref = db.doc(req.params.account)
   ref.set({
-    ledger: req.body
+    ledger: req.body.newLedger,
+    save: req.body.newSave
   }, { merge: true })
     .then(() => {
       res.json({
