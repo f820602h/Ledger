@@ -1,0 +1,124 @@
+<template>
+  <div>
+    <Module>
+      <template slot="head">
+        <h5 class="my-3">日期設定</h5>
+      </template>
+      <div slot="body" class="p-4">
+        <div class="row align-items-center justify-content-between">
+          <div class="btn-group btn-group-toggle col-auto">
+            <label class="btn btn-info border" for="week" :class="{'btn-light': dataMode !== 'week'}">
+              <input type="radio" name="dataMode" id="week" value="week" v-model="dataMode"> 本週
+            </label>
+            <label class="btn btn-info border" for="month" :class="{'btn-light': dataMode !== 'month'}">
+              <input type="radio" name="dataMode" id="month" value="month" v-model="dataMode"> 本月
+            </label>
+            <label class="btn btn-info border" for="cust" :class="{'btn-light': dataMode !== 'cust'}">
+              <input type="radio" name="dataMode" id="cust" value="cust" v-model="dataMode"> 自訂日期
+            </label>
+          </div>
+          <h5 class="col-auto mb-0 font-weight-normal" v-if="dataMode !== 'cust'">
+            {{ dateRange | dateRange }}
+          </h5>
+        </div>
+        <div class="row" v-if="dataMode === 'cust'">
+          <div class="input-group col-12 col-md-6 mt-3">
+            <input
+              type="date"
+              class="form-control"
+              v-model="dateRange.start"
+              min="2015-01-01"
+              :max="dateRange.end ? dateRange.end : maxDate"
+            >
+            <div class="input-group-append">
+              <span class="input-group-text">起</span>
+            </div>
+          </div>
+          <div class="input-group col-12 col-md-6 mt-3">
+            <input
+              type="date"
+              class="form-control"
+              v-model="dateRange.end"
+              :min="dateRange.start"
+              :max="maxDate"
+              :disabled="dateRange.start === ''"
+            >
+            <div class="input-group-append">
+              <span class="input-group-text">迄</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Module>
+  </div>
+</template>
+
+<script>
+import Module from '@/components/element/Module'
+import { mapState } from 'vuex'
+export default {
+  name: 'DatePicker',
+  components: {
+    Module
+  },
+  data () {
+    return {
+      days: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
+      dataMode: 'week',
+      dateRange: {
+        start: '',
+        end: ''
+      }
+    }
+  },
+  computed: {
+    ...mapState(['today']),
+    maxDate () {
+      let maxYear = new Date(this.today).getFullYear() + 2
+      return `${maxYear}-12-31`
+    }
+  },
+  watch: {
+    today () {
+      this.getThisWeek()
+    },
+    dataMode () {
+      if (this.dataMode === 'week') this.getThisWeek()
+      if (this.dataMode === 'month') this.getThisMonth()
+      if (this.dataMode === 'cust') this.dateRange = {}
+    }
+  },
+  methods: {
+    getThisWeek () {
+      let whickDay = new Date(this.today).getDay()
+      this.dateRange = {
+        start: this.today - (whickDay - 1) * 86400000,
+        end: this.today + (7 - whickDay + 1) * 86400000
+      }
+    },
+    getThisMonth () {
+      let whickDate = new Date(this.today).getDate()
+      let whickMonth = new Date(this.today).getMonth()
+      let whickYear = new Date(this.today).getFullYear()
+      let HowMuchDays = this.isLeapYear(whickYear) && this.datePick.month === 1 ? 29 : this.days[whickMonth]
+      this.dateRange = {
+        start: this.today - (whickDate - 1) * 86400000,
+        end: this.today + (HowMuchDays - whickDate + 1) * 86400000
+      }
+    },
+    isLeapYear (year) {
+      if (year % 400 === 0) {
+        return true
+      } else if (this.year % 4 === 0 && year % 100 !== 0) {
+        return true
+      } else {
+        return false
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>

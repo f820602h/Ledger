@@ -1,11 +1,14 @@
 <template>
   <div>
-    <div class="rounded overflow-hidden" :class="color">
+    <div class="rounded overflow-hidden bg-white">
       <div class="px-4 border-bottom">
         <slot name="head"/>
       </div>
       <div>
         <slot name="body"/>
+      </div>
+      <div class="px-4 border-top" v-if="footer">
+        <slot name="footer"/>
       </div>
     </div>
   </div>
@@ -15,9 +18,9 @@
 export default {
   name: 'Module',
   props: {
-    color: {
-      type: String,
-      default: 'bg-white'
+    footer: {
+      type: Boolean,
+      default: false
     }
   }
 }

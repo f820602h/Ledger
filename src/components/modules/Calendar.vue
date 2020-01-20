@@ -5,8 +5,8 @@
         <div class="row">
           <div class="col-6">
             <select name="year" id="year" class="form-control" v-model="datePick.year">
-              <option v-for="i in 10" :key="i" :value="today.year - 6 + i">
-                {{ today.year - 6 + i + ' 年'}}
+              <option v-for="i in today.year + 2 - 2014" :key="i" :value="2014 + i">
+                {{ 2014 + i + ' 年'}}
               </option>
             </select>
           </div>
@@ -131,9 +131,6 @@ export default {
       } else {
         return false
       }
-    },
-    recentYears () {
-      return this.today.year + 10
     },
     HowManyDay () {
       if (this.isLeapYear && this.datePick.month === 1) {

@@ -1,6 +1,7 @@
 <template>
   <div>
       <Account />
+      <hr class="mt-4 mb-0">
       <Calendar />
       <SpendingList />
   </div>
