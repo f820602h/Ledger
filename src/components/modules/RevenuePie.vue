@@ -15,6 +15,7 @@
 <script>
 import Module from '@/components/element/Module'
 import { Chart } from 'highcharts-vue'
+import { mapGetters } from 'vuex'
 export default {
   name: 'RevenuePie',
   components: {
@@ -31,6 +32,7 @@ export default {
           text: null
         },
         tooltip: {
+          enabled: !!this.seriesData,
           pointFormat: '{series.name}: <b>NT$' + '{point.y}</b>'
         },
         legend: {
@@ -44,7 +46,7 @@ export default {
         plotOptions: {
           pie: {
             dataLabels: {
-              enabled: true,
+              enabled: !!this.seriesData,
               distance: 3,
               connectorWidth: 1,
               connectorPadding: 0,
@@ -56,15 +58,11 @@ export default {
         series: [{
           type: 'pie',
           name: '金額',
-          data: [
-            ['伙食', 1000],
-            ['交通', 387],
-            ['娛樂', 578],
-            ['其他', 200],
-            ['投資', 200],
-            ['薪資', 200],
-            ['獎金', 200]
-          ]
+          data: this.seriesData ? this.seriesData : [{
+            name: '無',
+            y: 100,
+            color: '#ccc'
+          }]
         }],
         responsive: {
           rules: [{
@@ -85,6 +83,11 @@ export default {
         }
       }
     }
+  },
+  computed: {
+    ...mapGetters({
+      seriesData: 'GET_REVENUE_PIE_DATA'
+    })
   }
 }
 </script>

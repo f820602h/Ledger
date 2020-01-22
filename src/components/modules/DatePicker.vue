@@ -17,9 +17,9 @@
               <input type="radio" name="dataMode" id="cust" value="cust" v-model="dataMode"> 自訂日期
             </label>
           </div>
-          <h5 class="col-auto mb-0 font-weight-normal" v-if="dataMode !== 'cust'">
+          <p class="col-auto mb-0 font-weight-normal" v-if="dataMode !== 'cust'">
             {{ dateRange | dateRange }}
-          </h5>
+          </p>
         </div>
         <div class="row" v-if="dataMode === 'cust'">
           <div class="input-group col-12 col-md-6 mt-3">
@@ -55,7 +55,7 @@
 
 <script>
 import Module from '@/components/element/Module'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'DatePicker',
   components: {
@@ -64,12 +64,15 @@ export default {
   data () {
     return {
       days: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-      dataMode: 'week',
+      dataMode: '',
       dateRange: {
         start: '',
         end: ''
       }
     }
+  },
+  mounted () {
+    this.dataMode = 'week'
   },
   computed: {
     ...mapState(['today']),
@@ -81,14 +84,17 @@ export default {
   watch: {
     today () {
       this.getThisWeek()
+      this.SET_DATE_RANGE(this.dateRange)
     },
     dataMode () {
       if (this.dataMode === 'week') this.getThisWeek()
       if (this.dataMode === 'month') this.getThisMonth()
       if (this.dataMode === 'cust') this.dateRange = {}
+      this.SET_DATE_RANGE(this.dateRange)
     }
   },
   methods: {
+    ...mapMutations(['SET_DATE_RANGE']),
     getThisWeek () {
       let whickDay = new Date(this.today).getDay()
       this.dateRange = {

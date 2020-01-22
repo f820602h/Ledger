@@ -11,6 +11,7 @@ export default new Vuex.Store({
     user: 'f820602h@yahoo.com.tw',
     today: '',
     currentDate: '',
+    dateRange: {},
     save: 0,
     ledger: [],
     account: {},
@@ -32,8 +33,11 @@ export default new Vuex.Store({
     SET_TYPE_LIST (state, payload) {
       state.typeList = payload
     },
-    SET_CURRENT_DATA (state, payload) {
+    SET_CURRENT_DATE (state, payload) {
       state.currentDate = payload
+    },
+    SET_DATE_RANGE (state, payload) {
+      state.dateRange = payload
     }
   },
   actions: {
@@ -59,12 +63,7 @@ export default new Vuex.Store({
       }
       const timestamp = new Date(`${today.year}-${today.month + 1}-${today.date}`).getTime()
       commit('SET_TODAY', timestamp)
-      commit('SET_CURRENT_DATA', timestamp)
-    },
-
-    GET_CURRENT_DATA ({ commit }, date) {
-      const timestamp = new Date(`${date.year}-${date.month + 1}-${date.date}`).getTime()
-      commit('SET_CURRENT_DATA', timestamp)
+      commit('SET_CURRENT_DATE', timestamp)
     },
 
     ADD_NEW_DATA ({ state, commit }, data) {
@@ -112,11 +111,47 @@ export default new Vuex.Store({
       })
       return data
     },
+
     GET_DAILY_DATA (state) {
       let data = state.ledger.filter((item) => {
         return item.date === state.currentDate
       })
       return data
+    },
+
+    GET_RANGE_DATA (state) {
+      let data = state.ledger.filter((item) => {
+        return item.date >= state.dateRange.start && item.date < state.dateRange.end
+      })
+      return data
+    },
+
+    GET_REVENUE_PIE_DATA (state, gettres) {
+      let pieData = []
+      state.typeList.income.forEach((type) => {
+        let data = [type, 0]
+        gettres.GET_RANGE_DATA.forEach((term) => {
+          if (term.type === type) data[1] += term.cost
+        })
+        pieData.push(data)
+      })
+      return pieData.filter((term) => {
+        return term[1] > 0
+      })
+    },
+
+    GET_EXPENSES_PIE_DATA (state, gettres) {
+      let pieData = []
+      state.typeList.pay.forEach((type) => {
+        let data = [type, 0]
+        gettres.GET_RANGE_DATA.forEach((term) => {
+          if (term.type === type) data[1] += term.cost
+        })
+        pieData.push(data)
+      })
+      return pieData.filter((term) => {
+        return term[1] > 0
+      })
     }
   }
 })

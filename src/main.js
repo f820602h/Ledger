@@ -24,9 +24,14 @@ Vue.filter('currency', function (value) {
 })
 Vue.filter('dateRange', function (value) {
   let config = { year: 'numeric', month: '2-digit', day: '2-digit' }
-  let start = new Date(value.start).toLocaleString('zh', config)
-  let end = new Date(value.end - 1).toLocaleString('zh', config)
+  let start = new Date(value.start).toLocaleString('zh', config).replace('/', ' 年 ').replace('/', ' 月 ') + ' 日'
+  let end = new Date(value.end - 1).toLocaleString('zh', config).replace('/', ' 年 ').replace('/', ' 月 ') + ' 日'
   return `${start} - ${end}`
+})
+Vue.filter('date', function (value) {
+  let config = { year: 'numeric', month: '2-digit', day: '2-digit' }
+  let date = new Date(value).toLocaleString('zh', config).replace('/', ' 年 ').replace('/', ' 月 ') + ' 日'
+  return date
 })
 Vue.filter('time', function (value) {
   let config = { hour12: true, hour: '2-digit', minute: '2-digit' }
