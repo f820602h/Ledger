@@ -4,7 +4,10 @@
       <h5 class="my-3">消費曲線</h5>
     </template>
     <div slot="body" class="p-4">
-      <highcharts :options="chartOptions"/>
+      <highcharts :options="chartOptions" v-if="this.seriesData.length"/>
+      <h4 class="d-flex justify-content-center align-items-center mb-0" style="height: 350px" v-else>
+        無任何消費
+      </h4>
     </div>
   </Module>
 </template>
@@ -12,19 +15,27 @@
 <script>
 import Module from '@/components/element/Module'
 import { Chart } from 'highcharts-vue'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'SpendingTrend',
   components: {
     Module,
     highcharts: Chart
   },
-  data () {
-    return {
-      chartOptions: {
+  computed: {
+    ...mapState(['dateRange']),
+    ...mapGetters({
+      seriesData: 'GET_SPENDING_TREND_DATA'
+    }),
+    chartOptions () {
+      return {
         chart: {
           height: '350px'
         },
         title: undefined,
+        xAxis: {
+          type: 'datetime'
+        },
         yAxis: {
           title: {
             text: undefined
@@ -40,19 +51,15 @@ export default {
             label: {
               connectorAllowed: false
             },
-            pointStart: 2010
+            pointStart: Date.UTC(
+              new Date(this.dateRange.start).getFullYear(),
+              new Date(this.dateRange.start).getMonth(),
+              new Date(this.dateRange.start).getDate()
+            ),
+            pointInterval: 24 * 3600 * 1000 // one day
           }
         },
-        series: [
-          {
-            name: '销售',
-            data: [117, 177, 160, 197, 201, 243, 321, 393]
-          },
-          {
-            name: '其他',
-            data: [129, 59, 81, 112, 89, 118, 182, 181]
-          }
-        ],
+        series: this.seriesData,
         credits: {
           enabled: false
         }
@@ -61,7 +68,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>

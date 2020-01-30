@@ -100,7 +100,6 @@ export default new Vuex.Store({
         .then(() => {
           commit('SET_LEDGER', newLedger)
           commit('SET_SAVE', newSave)
-          console.log('delete')
         })
     }
   },
@@ -121,37 +120,77 @@ export default new Vuex.Store({
 
     GET_RANGE_DATA (state) {
       let data = state.ledger.filter((item) => {
-        return item.date >= state.dateRange.start && item.date < state.dateRange.end
+        return item.time >= state.dateRange.start && item.time < state.dateRange.end
       })
       return data
     },
 
     GET_REVENUE_PIE_DATA (state, gettres) {
-      let pieData = []
-      state.typeList.income.forEach((type) => {
-        let data = [type, 0]
-        gettres.GET_RANGE_DATA.forEach((term) => {
-          if (term.type === type) data[1] += term.cost
-        })
-        pieData.push(data)
+      let data = []
+      let typePool = []
+      let costPool = []
+      let rangeData = gettres.GET_RANGE_DATA.filter((term) => {
+        return term.sheet === 'income'
       })
-      return pieData.filter((term) => {
-        return term[1] > 0
+      rangeData.forEach((term) => {
+        let index = typePool.indexOf(term.type)
+        if (index === -1) {
+          typePool.push(term.type)
+          costPool.push(term.cost)
+        } else costPool[index] += term.cost
       })
+      for (let i = 0; i < typePool.length; i++) {
+        data.push([typePool[i], costPool[i]])
+      }
+      return data
     },
 
     GET_EXPENSES_PIE_DATA (state, gettres) {
-      let pieData = []
-      state.typeList.pay.forEach((type) => {
-        let data = [type, 0]
-        gettres.GET_RANGE_DATA.forEach((term) => {
-          if (term.type === type) data[1] += term.cost
+      let data = []
+      let typePool = []
+      let costPool = []
+      let rangeData = gettres.GET_RANGE_DATA.filter((term) => {
+        return term.sheet === 'pay'
+      })
+      rangeData.forEach((term) => {
+        let index = typePool.indexOf(term.type)
+        if (index === -1) {
+          typePool.push(term.type)
+          costPool.push(term.cost)
+        } else costPool[index] += term.cost
+      })
+      for (let i = 0; i < typePool.length; i++) {
+        data.push([typePool[i], costPool[i]])
+      }
+      return data
+    },
+
+    GET_SPENDING_TREND_DATA (state, gettres) {
+      let data = []
+      let typePool = []
+      let costPool = []
+      let rangeData = gettres.GET_RANGE_DATA.filter((term) => {
+        return term.sheet === 'pay'
+      })
+      rangeData.forEach((term) => {
+        let index = typePool.indexOf(term.type)
+        let dateSort = (term.date - state.dateRange.start) / 86400000
+        if (index === -1) {
+          typePool.push(term.type)
+          index = typePool.indexOf(term.type)
+          costPool[index] = []
+          costPool[index].length = (state.dateRange.end - state.dateRange.start) / 86400000
+          costPool[index].fill(0)
+        }
+        costPool[index][dateSort] += term.cost
+      })
+      for (let i = 0; i < typePool.length; i++) {
+        data.push({
+          name: typePool[i],
+          data: costPool[i]
         })
-        pieData.push(data)
-      })
-      return pieData.filter((term) => {
-        return term[1] > 0
-      })
+      }
+      return data
     }
   }
 })

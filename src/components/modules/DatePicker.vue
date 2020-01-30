@@ -26,9 +26,10 @@
             <input
               type="date"
               class="form-control"
-              v-model="dateRange.start"
+              v-model="dateStart"
               min="2015-01-01"
-              :max="dateRange.end ? dateRange.end : maxDate"
+              :max="dateEnd ? dateEnd : maxDate"
+              @change="getCustDate"
             >
             <div class="input-group-append">
               <span class="input-group-text">起</span>
@@ -38,10 +39,11 @@
             <input
               type="date"
               class="form-control"
-              v-model="dateRange.end"
-              :min="dateRange.start"
+              v-model="dateEnd"
+              :min="dateStart"
               :max="maxDate"
-              :disabled="dateRange.start === ''"
+              :disabled="dateStart === ''"
+              @change="getCustDate"
             >
             <div class="input-group-append">
               <span class="input-group-text">迄</span>
@@ -65,10 +67,9 @@ export default {
     return {
       days: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
       dataMode: '',
-      dateRange: {
-        start: '',
-        end: ''
-      }
+      dateStart: '',
+      dateEnd: '',
+      dateRange: {}
     }
   },
   mounted () {
@@ -89,8 +90,7 @@ export default {
     dataMode () {
       if (this.dataMode === 'week') this.getThisWeek()
       if (this.dataMode === 'month') this.getThisMonth()
-      if (this.dataMode === 'cust') this.dateRange = {}
-      this.SET_DATE_RANGE(this.dateRange)
+      if (this.dataMode === 'cust') this.getCustDate()
     }
   },
   methods: {
@@ -101,6 +101,7 @@ export default {
         start: this.today - (whickDay - 1) * 86400000,
         end: this.today + (7 - whickDay + 1) * 86400000
       }
+      this.SET_DATE_RANGE(this.dateRange)
     },
     getThisMonth () {
       let whickDate = new Date(this.today).getDate()
@@ -111,6 +112,14 @@ export default {
         start: this.today - (whickDate - 1) * 86400000,
         end: this.today + (HowMuchDays - whickDate + 1) * 86400000
       }
+      this.SET_DATE_RANGE(this.dateRange)
+    },
+    getCustDate () {
+      this.dateRange = {
+        start: new Date(this.dateStart + ' 00:00').getTime(),
+        end: new Date(this.dateEnd + ' 00:00').getTime() + 86400000
+      }
+      this.SET_DATE_RANGE(this.dateRange)
     },
     isLeapYear (year) {
       if (year % 400 === 0) {
