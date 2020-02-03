@@ -119,8 +119,8 @@ export default {
         numeric,
         rex: (value) => {
           if (value === '') return true
-          var rex = new RegExp(/^[1-9][0-9]*$/)
-          return rex.test(value)
+          var rex = new RegExp(/^0/)
+          return !rex.test(value)
         }
       },
       description: { maxLength: maxLength(50) }

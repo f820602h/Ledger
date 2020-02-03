@@ -18,24 +18,14 @@ import Module from '@/components/element/Module'
 import { Chart } from 'highcharts-vue'
 import { mapGetters } from 'vuex'
 export default {
-  name: 'RevenuePie',
+  name: 'ExpensesPie',
   components: {
     Module,
     highcharts: Chart
   },
-  computed: {
-    ...mapGetters({
-      seriesData: 'GET_EXPENSES_PIE_DATA'
-    }),
-    total () {
-      let total = 0
-      this.seriesData.forEach((item) => {
-        total += item[1]
-      })
-      return total
-    },
-    chartOptions () {
-      return {
+  data () {
+    return {
+      chartOptions: {
         chart: {
           height: '250px'
         },
@@ -69,7 +59,7 @@ export default {
         series: [{
           type: 'pie',
           name: '金額',
-          data: this.seriesData
+          data: []
         }],
         responsive: {
           rules: [{
@@ -89,6 +79,26 @@ export default {
           enabled: false
         }
       }
+    }
+  },
+  computed: {
+    ...mapGetters({
+      seriesData: 'GET_EXPENSES_PIE_DATA'
+    }),
+    total () {
+      let total = 0
+      this.seriesData.forEach((item) => {
+        total += item.y
+      })
+      return total
+    }
+  },
+  watch: {
+    seriesData (newValue) {
+      this.chartOptions.series[0].data = []
+      setTimeout(() => {
+        this.chartOptions.series[0].data = newValue
+      }, 0)
     }
   }
 }

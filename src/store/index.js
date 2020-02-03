@@ -101,6 +101,13 @@ export default new Vuex.Store({
           commit('SET_LEDGER', newLedger)
           commit('SET_SAVE', newSave)
         })
+    },
+
+    RESET_SAVE ({ state, commit }, newSave) {
+      axios.post(`${process.env.VUE_APP_URL}/ledger/save/${state.user}`, { newSave })
+        .then(() => {
+          commit('SET_SAVE', newSave)
+        })
     }
   },
   getters: {
@@ -140,7 +147,10 @@ export default new Vuex.Store({
         } else costPool[index] += term.cost
       })
       for (let i = 0; i < typePool.length; i++) {
-        data.push([typePool[i], costPool[i]])
+        data.push({
+          name: typePool[i],
+          y: costPool[i]
+        })
       }
       return data
     },
@@ -160,7 +170,10 @@ export default new Vuex.Store({
         } else costPool[index] += term.cost
       })
       for (let i = 0; i < typePool.length; i++) {
-        data.push([typePool[i], costPool[i]])
+        data.push({
+          name: typePool[i],
+          y: costPool[i]
+        })
       }
       return data
     },

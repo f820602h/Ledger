@@ -4,7 +4,7 @@
         <h5 class="my-3">收入總計</h5>
       </template>
       <div slot="body" class="p-4">
-        <highcharts :options="chartOptions" v-if="chartOptions.series[0].data.length"/>
+        <highcharts :options="chartOptions" v-if="seriesData.length"/>
         <h4 class="d-flex justify-content-center align-items-center mb-0" style="height: 250px" v-else>無任何收入</h4>
       </div>
       <template slot="footer">
@@ -23,19 +23,9 @@ export default {
     Module,
     highcharts: Chart
   },
-  computed: {
-    ...mapGetters({
-      seriesData: 'GET_REVENUE_PIE_DATA'
-    }),
-    total () {
-      let total = 0
-      this.seriesData.forEach((item) => {
-        total += item[1]
-      })
-      return total
-    },
-    chartOptions () {
-      return {
+  data () {
+    return {
+      chartOptions: {
         chart: {
           height: '250px'
         },
@@ -47,20 +37,21 @@ export default {
           pointFormat: '{series.name}: <b>NT$' + '{point.y}</b>'
         },
         legend: {
-          enabled: false
+          layout: 'vertical',
+          align: 'right',
+          verticalAlign: 'middle',
+          padding: 0,
+          itemDistance: 10,
+          itemMarginTop: 10
         },
         plotOptions: {
           pie: {
             dataLabels: {
               enabled: true,
-              distance: 10,
+              distance: 3,
               connectorWidth: 1,
               connectorPadding: 0,
-              format: '{point.name}: {point.percentage:.1f}%',
-              style: {
-                fontSize: '12px',
-                fontWeight: 'normal'
-              }
+              format: '<b>{point.percentage:.1f}%</b>'
             },
             showInLegend: true
           }
@@ -68,7 +59,7 @@ export default {
         series: [{
           type: 'pie',
           name: '金額',
-          data: this.seriesData
+          data: []
         }],
         responsive: {
           rules: [{
@@ -88,6 +79,26 @@ export default {
           enabled: false
         }
       }
+    }
+  },
+  computed: {
+    ...mapGetters({
+      seriesData: 'GET_REVENUE_PIE_DATA'
+    }),
+    total () {
+      let total = 0
+      this.seriesData.forEach((item) => {
+        total += item.y
+      })
+      return total
+    }
+  },
+  watch: {
+    seriesData (newValue) {
+      this.chartOptions.series[0].data = []
+      setTimeout(() => {
+        this.chartOptions.series[0].data = newValue
+      }, 0)
     }
   }
 }

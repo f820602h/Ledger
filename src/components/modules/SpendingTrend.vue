@@ -5,7 +5,7 @@
     </template>
     <div slot="body" class="p-4">
       <highcharts :options="chartOptions" v-if="this.seriesData.length"/>
-      <h4 class="d-flex justify-content-center align-items-center mb-0" style="height: 350px" v-else>
+      <h4 class="d-flex justify-content-center align-items-center mb-0" style="height: 150px" v-else>
         無任何消費
       </h4>
     </div>
@@ -22,23 +22,21 @@ export default {
     Module,
     highcharts: Chart
   },
-  computed: {
-    ...mapState(['dateRange']),
-    ...mapGetters({
-      seriesData: 'GET_SPENDING_TREND_DATA'
-    }),
-    chartOptions () {
-      return {
+  data () {
+    return {
+      chartOptions: {
         chart: {
           height: '350px'
         },
-        title: undefined,
+        title: {
+          text: null
+        },
         xAxis: {
           type: 'datetime'
         },
         yAxis: {
           title: {
-            text: undefined
+            text: null
           }
         },
         legend: {
@@ -51,19 +49,39 @@ export default {
             label: {
               connectorAllowed: false
             },
-            pointStart: Date.UTC(
-              new Date(this.dateRange.start).getFullYear(),
-              new Date(this.dateRange.start).getMonth(),
-              new Date(this.dateRange.start).getDate()
-            ),
+            pointStart: Date.UTC(new Date()),
             pointInterval: 24 * 3600 * 1000 // one day
           }
         },
-        series: this.seriesData,
+        series: [],
         credits: {
           enabled: false
         }
       }
+    }
+  },
+  computed: {
+    ...mapState(['dateRange']),
+    ...mapGetters({
+      seriesData: 'GET_SPENDING_TREND_DATA'
+    })
+  },
+  watch: {
+    dateRange (newValue) {
+      this.chartOptions.plotOptions.series.pointStart = Date.UTC(new Date())
+      setTimeout(() => {
+        this.chartOptions.plotOptions.series.pointStart = Date.UTC(
+          new Date(newValue.start).getFullYear(),
+          new Date(newValue.start).getMonth(),
+          new Date(newValue.start).getDate()
+        )
+      }, 0)
+    },
+    seriesData (newValue) {
+      this.chartOptions.series = []
+      setTimeout(() => {
+        this.chartOptions.series = newValue
+      }, 0)
     }
   }
 }

@@ -48,4 +48,20 @@ router.post('/:account', function (req, res) {
     })
 })
 
+router.post('/save/:account', function (req, res) {
+  const ref = db.doc(req.params.account)
+  ref.set({
+    save: req.body.newSave
+  }, { merge: true })
+    .then(() => {
+      res.json({
+        success: true
+      })
+    }).catch(() => {
+      res.json({
+        success: false
+      })
+    })
+})
+
 module.exports = router

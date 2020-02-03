@@ -1,9 +1,10 @@
 <template>
   <div>
     <Module>
-      <template slot="head">
+      <div slot="head" class="d-flex justify-content-between align-items-center">
         <h5 class="my-3">日期設定</h5>
-      </template>
+        <router-link :to="'/'" class="btn btn-sm btn-info my-2">每日總覽</router-link>
+      </div>
       <div slot="body" class="p-4">
         <div class="row align-items-center justify-content-between">
           <div class="btn-group btn-group-toggle col-auto">
@@ -17,7 +18,7 @@
               <input type="radio" name="dataMode" id="cust" value="cust" v-model="dataMode"> 自訂日期
             </label>
           </div>
-          <p class="col-auto mb-0 font-weight-normal" v-if="dataMode !== 'cust'">
+          <p class="col-auto mt-3 mb-0 mt-md-0 font-weight-normal" v-if="dataMode !== 'cust'">
             {{ dateRange | dateRange }}
           </p>
         </div>

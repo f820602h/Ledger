@@ -1,9 +1,10 @@
 <template>
   <div class="mt-4">
     <Module>
-      <template slot="head">
+      <div slot="head" class="d-flex justify-content-between align-items-center">
         <h5 class="my-3">收支明細</h5>
-      </template>
+        <router-link :to="'/dashboard'" class="btn btn-sm btn-info my-2">詳細數據</router-link>
+      </div>
       <div slot="body" class="p-4">
         <div class="row align-items-center">
           <div class="col-12 col-md-4 input-group my-2">

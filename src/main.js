@@ -16,7 +16,15 @@ Highcahrts.setOptions({
   lang: {
     thousandsSep: ','
   },
-  colors: ['rgb(236, 208, 120)', 'rgba(217, 91, 67, 0.7)', 'rgba(192, 41, 66, 0.7)', 'rgba(84, 36, 55, 0.7)', 'rgba(83, 119, 122, 0.7)', 'rgba(119, 146, 174, 0.7)', '#636368']
+  colors: [
+    'rgb(236, 208, 120)',
+    'rgba(217, 91, 67, 0.7)',
+    'rgba(192, 41, 66, 0.7)',
+    'rgba(84, 36, 55, 0.7)',
+    'rgba(83, 119, 122, 0.7)',
+    'rgba(119, 146, 174, 0.7)',
+    '#636368'
+  ]
 })
 
 Vue.filter('currency', function (value) {
