@@ -17,13 +17,38 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 const db = firebase.firestore().collection('ledger')
 
+router.post('/login', function (req, res) {
+  const ref = db.doc(req.body.account)
+  ref.get().then(data => {
+    if (data.data().account.password === req.body.password) {
+      res.json({
+        success: true
+      })
+    } else {
+      res.json({
+        success: false
+      })
+    }
+  }).catch(() => {
+    res.json({
+      success: false
+    })
+  })
+})
+
 router.get('/:account', function (req, res) {
   const ref = db.doc(req.params.account)
   ref.get().then(data => {
-    res.json({
-      success: true,
-      body: data.data()
-    })
+    if (data.data()) {
+      res.json({
+        success: true,
+        body: data.data()
+      })
+    } else {
+      res.json({
+        success: false
+      })
+    }
   }).catch(() => {
     res.json({
       success: false

@@ -4,7 +4,7 @@
       <router-view/>
     </div>
     <div class="replace"></div>
-    <ActionBar @toggleAddPopup="toggleAddPopup"/>
+    <ActionBar @toggleAddPopup="toggleAddPopup" v-if="isLoginPage"/>
     <AddPopup v-if="AddPopupIsShow" @toggleAddPopup="toggleAddPopup"/>
   </div>
 </template>
@@ -12,7 +12,6 @@
 <script>
 import ActionBar from '@/components/utility/ActionBar'
 import AddPopup from '@/components/utility/AddPopup'
-import { mapActions } from 'vuex'
 export default {
   name: 'App',
   data () {
@@ -24,11 +23,12 @@ export default {
     ActionBar,
     AddPopup
   },
-  mounted () {
-    this.INIT_DATA()
+  computed: {
+    isLoginPage () {
+      return this.$route.path !== '/'
+    }
   },
   methods: {
-    ...mapActions(['INIT_DATA']),
     toggleAddPopup (state) {
       this.AddPopupIsShow = state
       document.body.style.overflow = state ? 'hidden' : ''

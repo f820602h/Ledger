@@ -8,24 +8,27 @@ Vue.use(Vuelidate)
 
 export default new Vuex.Store({
   state: {
-    user: 'f820602h@yahoo.com.tw',
+    user: '',
+    loginState: null,
     today: '',
     currentDate: '',
     dateRange: {},
     save: 0,
     ledger: [],
-    account: {},
     typeList: {}
   },
   mutations: {
+    SET_USER (state, payload) {
+      state.user = payload
+    },
+    SET_LOGIN_STATE (state, payload) {
+      state.loginState = payload
+    },
     SET_TODAY (state, payload) {
       state.today = payload
     },
     SET_LEDGER (state, payload) {
       state.ledger = payload
-    },
-    SET_ACCOUNT_DATA (state, payload) {
-      state.account = payload
     },
     SET_SAVE (state, payload) {
       state.save = payload
@@ -41,16 +44,26 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    INIT_DATA ({ state, commit, dispatch }) {
-      dispatch('GET_TODAY_TIME_STAMP')
-      axios.get(`${process.env.VUE_APP_URL}/ledger/${state.user}`)
+    LOGIN_CHECK ({ commit, dispatch }, payload) {
+      axios.post(`${process.env.VUE_APP_URL}/ledger/login`, payload)
         .then(res => {
           if (res.data.success) {
-            commit('SET_LEDGER', res.data.body.ledger)
-            commit('SET_ACCOUNT_DATA', res.data.body.account)
-            commit('SET_SAVE', res.data.body.save)
-            commit('SET_TYPE_LIST', res.data.body.type)
+            commit('SET_LOGIN_STATE', true)
+            dispatch('INIT_DATA', payload.account)
+          } else {
+            commit('SET_LOGIN_STATE', false)
           }
+        })
+    },
+
+    INIT_DATA ({ commit, dispatch }, account) {
+      dispatch('GET_TODAY_TIME_STAMP')
+      axios.get(`${process.env.VUE_APP_URL}/ledger/${account}`)
+        .then(res => {
+          commit('SET_USER', res.data.body.account.email)
+          commit('SET_LEDGER', res.data.body.ledger)
+          commit('SET_SAVE', res.data.body.save)
+          commit('SET_TYPE_LIST', res.data.body.type)
         })
     },
 
