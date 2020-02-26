@@ -1,17 +1,20 @@
 const express = require('express')
 const firebase = require('firebase')
+require('dotenv').config()
+
+// 載入 jwt
+// var jwt = require('jsonwebtoken')
 
 const router = express.Router()
-
 const firebaseConfig = {
-  apiKey: 'AIzaSyAqy8ntkM52HedxRGpm-yIZF5CMKGjJOrI',
-  authDomain: 'node-project-dc11c.firebaseapp.com',
-  databaseURL: 'https://node-project-dc11c.firebaseio.com',
-  projectId: 'node-project-dc11c',
-  storageBucket: 'node-project-dc11c.appspot.com',
-  messagingSenderId: '940587931446',
-  appId: '1:940587931446:web:c12b9694c7ecd31e7e4597',
-  measurementId: 'G-00DS5WTD1H'
+  apiKey: process.env.apiKey,
+  authDomain: process.env.authDomain,
+  databaseURL: process.env.databaseURL,
+  projectId: process.env.projectId,
+  storageBucket: process.env.storageBucket,
+  messagingSenderId: process.env.messagingSenderId,
+  appId: process.env.appId,
+  measurementId: process.env.measurementId
 }
 
 firebase.initializeApp(firebaseConfig)

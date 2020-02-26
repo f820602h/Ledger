@@ -44,6 +44,13 @@ export default {
           align: 'right',
           verticalAlign: 'top'
         },
+        tooltip: {
+          shared: true,
+          headerFormat: '<b style="font-size: 12px">{point.key}</b><br/>',
+          style: {
+            lineHeight: '20px'
+          }
+        },
         plotOptions: {
           series: {
             label: {

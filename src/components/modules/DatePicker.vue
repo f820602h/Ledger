@@ -108,7 +108,7 @@ export default {
       let whickDate = new Date(this.today).getDate()
       let whickMonth = new Date(this.today).getMonth()
       let whickYear = new Date(this.today).getFullYear()
-      let HowMuchDays = this.isLeapYear(whickYear) && this.datePick.month === 1 ? 29 : this.days[whickMonth]
+      let HowMuchDays = this.isLeapYear(whickYear) && whickMonth === 1 ? 29 : this.days[whickMonth]
       this.dateRange = {
         start: this.today - (whickDate - 1) * 86400000,
         end: this.today + (HowMuchDays - whickDate + 1) * 86400000
@@ -125,7 +125,7 @@ export default {
     isLeapYear (year) {
       if (year % 400 === 0) {
         return true
-      } else if (this.year % 4 === 0 && year % 100 !== 0) {
+      } else if (year % 4 === 0 && year % 100 !== 0) {
         return true
       } else {
         return false
