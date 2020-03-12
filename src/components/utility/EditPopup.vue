@@ -85,8 +85,8 @@ export default {
   data () {
     return {
       newData: {
-        date: this.term.date,
-        time: this.term.time,
+        date: '',
+        time: '',
         sheet: this.term.sheet,
         type: this.term.type,
         cost: this.term.cost,
@@ -135,8 +135,8 @@ export default {
       hour: '2-digit',
       minute: '2-digit'
     }
-    this.newData.date = new Date().toLocaleString('zh', config).split(' ')[0]
-    this.newData.time = new Date().toLocaleString('zh', config).split(' ')[1]
+    this.newData.date = new Date(this.term.date).toLocaleString('zh', config).split(' ')[0]
+    this.newData.time = new Date(this.term.time).toLocaleString('zh', config).split(' ')[1]
   },
   computed: {
     ...mapState(['typeList']),

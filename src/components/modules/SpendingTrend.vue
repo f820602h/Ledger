@@ -32,7 +32,15 @@ export default {
           text: null
         },
         xAxis: {
-          type: 'datetime'
+          type: 'datetime',
+          labels: {
+            formatter () {
+              return new Date(this.value).toLocaleString('zh-tw', {
+                month: 'numeric',
+                day: 'numeric'
+              })
+            }
+          }
         },
         yAxis: {
           title: {
@@ -46,10 +54,24 @@ export default {
         },
         tooltip: {
           shared: true,
-          headerFormat: '<b style="font-size: 12px">{point.key}</b><br/>',
+          formatter () {
+            console.log(this)
+            let head = new Date(this.x).toLocaleString('zh-tw', {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric'
+            })
+            let string = `<b>${head}</b><br/>`
+            this.points.forEach(points => {
+              string += `<span style="color:${points.color}">\u25CF</span> ${points.series.name}: NT$ ${points.y}</b><br/>`
+            })
+            return string
+          },
           style: {
+            fontFamily: 'Microsoft JhengHei',
             lineHeight: '20px'
-          }
+          },
+          padding: 12
         },
         plotOptions: {
           series: {

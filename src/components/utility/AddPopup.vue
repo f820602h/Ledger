@@ -129,11 +129,11 @@ export default {
       hour: '2-digit',
       minute: '2-digit'
     }
-    this.newData.date = new Date().toLocaleString('zh', config).split(' ')[0]
+    this.newData.date = new Date(this.currentDate).toLocaleString('zh', config).split(' ')[0]
     this.newData.time = new Date().toLocaleString('zh', config).split(' ')[1]
   },
   computed: {
-    ...mapState(['typeList']),
+    ...mapState(['typeList', 'currentDate']),
     filterType () {
       return {
         income: this.typeList.income,
