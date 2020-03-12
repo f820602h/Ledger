@@ -22,6 +22,13 @@ export default {
     Calendar,
     DailySum,
     SpendingList
+  },
+  beforeRouteUpdate (to, from, next) {
+    this.$store.commit('SET_CURRENT_DATE', Number(to.params.timestamp))
+    next()
+  },
+  mounted () {
+    this.$store.commit('SET_CURRENT_DATE', Number(this.$route.params.timestamp))
   }
 }
 </script>

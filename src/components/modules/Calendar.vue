@@ -34,7 +34,7 @@
           :key="'s'+ space"
         />
         <p
-          :class="{picked: pickedDate === date}"
+          :class="{picked: new Date(currentDate).getDate() === date}"
           class="d-flex justify-content-center align-items-center mb-0 text-center rounded"
           v-for="date in HowManyDay"
           :key="date"
@@ -57,47 +57,42 @@ export default {
   },
   data () {
     return {
-      datePick: {},
-      firstDay: 0,
+      datePick: {
+        year: '',
+        month: '',
+        date: ''
+      },
       day: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
       week: ['一', '二', '三', '四', '五', '六', '日']
     }
   },
   mounted () {
-    let whatDay = new Date()
-    this.datePick = {
-      year: whatDay.getFullYear(),
-      month: whatDay.getMonth(),
-      date: whatDay.getDate()
-    }
+    this.datePick.year = new Date(this.currentDate).getFullYear()
+    this.datePick.month = new Date(this.currentDate).getMonth()
+    this.datePick.date = new Date(this.currentDate).getDate()
   },
   computed: {
-    ...mapState(['today', 'currentDate']),
+    ...mapState(['currentDate']),
     ...mapGetters({ dailyData: 'GET_DAILY_DATA' }),
-    dateTimestamp () {
-      return new Date(`${this.datePick.year}-${this.datePick.month + 1}-${this.datePick.date}`).getTime()
-    },
-    pickedDate () {
-      return new Date(this.currentDate).getDate()
+    firstDay () {
+      let day = new Date()
+      day.setFullYear(this.datePick.year, this.datePick.month, 1)
+      return (day.getDay() + 6) % 7
     },
     isLeapYear () {
       return this.datePick.year % 400 === 0 ? true : this.datePick.year % 4 === 0 && this.datePick.year % 100 !== 0
     },
     HowManyDay () {
       return this.isLeapYear && this.datePick.month === 1 ? 29 : this.day[this.datePick.month]
-    }
-  },
-  watch: {
+    },
     dateTimestamp () {
-      let day = new Date()
-      day.setFullYear(this.datePick.year, this.datePick.month, 1)
-      this.firstDay = (day.getDay() + 6) % 7
-      this.$store.commit('SET_CURRENT_DATE', this.dateTimestamp)
+      return new Date(`${this.datePick.year}-${this.datePick.month + 1}-${this.datePick.date}`).getTime()
     }
   },
   methods: {
     pickDate (date) {
       this.datePick.date = date
+      this.$router.push({ name: 'Daily', params: { timestamp: this.dateTimestamp } })
     }
   }
 }

@@ -15,7 +15,7 @@ const routes = [
     component: Login
   },
   {
-    path: '/daily',
+    path: '/daily/:timestamp',
     name: 'Daily',
     component: Daily
   },
@@ -40,7 +40,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (!store.state.loginState && to.name !== 'Login') next('/')
-  else if (store.state.loginState && to.name === 'Login') next('/daily')
+  else if (store.state.loginState && to.name === 'Login') next(`/daily/${store.state.today}`)
   else next()
 })
 

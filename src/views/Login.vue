@@ -46,12 +46,12 @@ export default {
     }
   },
   computed: {
-    ...mapState(['loginState'])
+    ...mapState(['loginState', 'today'])
   },
   watch: {
     loginState (value) {
       this.loginDefeat = !value
-      if (value) this.$router.push('/daily')
+      if (value) this.$router.push(`/daily/${this.today}`)
     }
   },
   methods: {

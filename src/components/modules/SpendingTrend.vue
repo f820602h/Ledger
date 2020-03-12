@@ -55,7 +55,6 @@ export default {
         tooltip: {
           shared: true,
           formatter () {
-            console.log(this)
             let head = new Date(this.x).toLocaleString('zh-tw', {
               year: 'numeric',
               month: 'numeric',

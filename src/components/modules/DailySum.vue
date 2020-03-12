@@ -9,7 +9,7 @@
       <div slot="body" class="dateDisplay p-4">
         <h4 class="mb-0 font-weight-light">
           {{ currentDate | date }}
-          <span v-if="isToday">(今天)</span>
+          <span v-if="currentDate === today">(今天)</span>
         </h4>
         <hr />
         <div class="d-flex justify-content-between align-items-center">
@@ -46,9 +46,6 @@ export default {
     ...mapGetters({
       dailyData: 'GET_DAILY_DATA'
     }),
-    isToday () {
-      return this.today === this.currentDate
-    },
     income () {
       let income = 0
       if (this.dailyData.length) {
@@ -73,7 +70,7 @@ export default {
   },
   methods: {
     backToday () {
-      this.$store.commit('SET_CURRENT_DATE', this.today)
+      this.$router.push({ name: 'Daily', params: { timestamp: this.today } })
     }
   }
 }
