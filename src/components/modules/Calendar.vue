@@ -135,18 +135,25 @@ export default {
     p{
       width: 45px;
       cursor: pointer;
+      transition: 0.25s;
+      &:hover{
+        background: rgba(185, 185, 185, 0.5);
+      }
       &.picked{
-        background: #ccc;
+        background: rgba(223, 152, 51, 0.25);
       }
       &.prevMonth,&.nextMonth{
         opacity: 0.2;
         cursor: default;
+        &:hover{
+          background: transparent;
+        }
       }
       &:nth-child(7n-1){
-        color: red;
+        color: #dc3545;
       }
       &:nth-child(7n){
-        color: red;
+        color: #dc3545;
       }
     }
   }
