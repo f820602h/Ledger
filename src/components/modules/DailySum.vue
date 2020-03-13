@@ -2,7 +2,7 @@
   <Module class="col mt-4">
       <div slot="head" class="d-flex justify-content-between align-items-center">
         <h5 class="my-3">每日總計</h5>
-        <button class="btn btn-info btn-sm" @click="backToday" :disabled="isToday">
+        <button class="btn btn-info btn-sm" @click="backToday" :disabled="currentDate === today">
           回到今天
         </button>
       </div>

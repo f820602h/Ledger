@@ -195,20 +195,27 @@ export default new Vuex.Store({
       let data = []
       let typePool = []
       let costPool = []
+      let totalPool = []
+      let arrayLength = (state.dateRange.end - state.dateRange.start) / 86400000
       let rangeData = gettres.GET_RANGE_DATA.filter((term) => {
         return term.sheet === 'pay'
       })
       rangeData.forEach((term) => {
         let index = typePool.indexOf(term.type)
         let dateSort = (term.date - state.dateRange.start) / 86400000
+        if (!totalPool.length) {
+          totalPool.length = arrayLength
+          totalPool.fill(0)
+        }
         if (index === -1) {
           typePool.push(term.type)
           index = typePool.indexOf(term.type)
           costPool[index] = []
-          costPool[index].length = (state.dateRange.end - state.dateRange.start) / 86400000
+          costPool[index].length = arrayLength
           costPool[index].fill(0)
         }
         costPool[index][dateSort] += term.cost
+        totalPool[dateSort] += term.cost
       })
       for (let i = 0; i < typePool.length; i++) {
         data.push({
@@ -216,6 +223,13 @@ export default new Vuex.Store({
           data: costPool[i]
         })
       }
+      data.push({
+        type: 'column',
+        name: '總消費',
+        data: totalPool,
+        zIndex: -1,
+        color: 'rgba(200,200,200,.5)'
+      })
       return data
     }
   }

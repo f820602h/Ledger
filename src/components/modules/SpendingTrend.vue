@@ -45,6 +45,9 @@ export default {
         yAxis: {
           title: {
             text: null
+          },
+          labels: {
+            format: '$ {value}'
           }
         },
         legend: {
@@ -62,20 +65,43 @@ export default {
             })
             let string = `<b>${head}</b><br/>`
             this.points.forEach(points => {
-              string += `<span style="color:${points.color}">\u25CF</span> ${points.series.name}: NT$ ${points.y}</b><br/>`
+              string += `<span style="color:${points.color}">\u25CF</span><b> ${points.series.name}：</b> NT$ ${points.y}<br />`
             })
             return string
           },
           style: {
             fontFamily: 'Microsoft JhengHei',
             lineHeight: '20px'
-          },
-          padding: 12
+          }
         },
         plotOptions: {
+          column: {
+            maxPointWidth: 30,
+            dataLabels: {
+              enabled: true,
+              formatter () {
+                if (this.y === 0) return
+                return `$${this.y}`
+              },
+              style: {
+                fontFamily: 'Microsoft JhengHei',
+                fontWeight: 'normal',
+                textOutline: 0,
+                color: 'rgb(150,150,150)'
+              }
+            }
+          },
           series: {
             label: {
               connectorAllowed: false
+            },
+            cursor: 'pointer',
+            point: {
+              events: {
+                click: ({ point }) => {
+                  this.$router.push({ name: 'Daily', params: { timestamp: point.x - 28800000 } })
+                }
+              }
             },
             pointStart: Date.UTC(new Date()),
             pointInterval: 24 * 3600 * 1000 // one day

@@ -3,14 +3,14 @@
     <div slot="body" class="calendar px-3 py-4">
       <div class="row">
         <div class="col-6">
-          <select name="year" id="year" class="form-control" v-model="datePick.year">
+          <select name="year" id="year" class="form-control" v-model="datePick.year" @change="goToDate">
             <option v-for="i in 5" :key="i" :value="2019 + i">
               {{ 2019 + i + ' 年'}}
             </option>
           </select>
         </div>
         <div class="col-6">
-          <select name="month" id="month" class="form-control " v-model="datePick.month">
+          <select name="month" id="month" class="form-control " v-model="datePick.month" @change="goToDate">
             <option v-for="i in 12" :key="i" :value="i-1">
               {{ i + ' 月'}}
             </option>
@@ -27,18 +27,32 @@
         </p>
       </div>
       <hr class="my-2">
-      <div class="date d-flex align-items-stretch flex-wrap mx-auto">
+      <div class="date d-flex align-items-stretch flex-wrap mx-auto" v-if="datePick.date">
         <p
-          class="space mb-0 text-center"
-          v-for="space in firstDay"
-          :key="'s'+ space"
-        />
+          class="prevMonth d-flex justify-content-center align-items-center mb-0 text-center"
+          v-for="date in prevMonth"
+          :key="'p'+ date"
+        >
+          <template v-if="datePick.month === 0">
+            {{ HowManyDay(datePick.year - 1, 11) - prevMonth + date }}
+          </template>
+          <template v-else>
+            {{ HowManyDay(datePick.year, datePick.month -1) - prevMonth + date }}
+          </template>
+        </p>
         <p
           :class="{picked: new Date(currentDate).getDate() === date}"
           class="d-flex justify-content-center align-items-center mb-0 text-center rounded"
-          v-for="date in HowManyDay"
+          v-for="date in HowManyDay(datePick.year, datePick.month)"
           :key="date"
           @click="pickDate(date)"
+        >
+          {{ date }}
+        </p>
+        <p
+          class="nextMonth d-flex justify-content-center align-items-center mb-0 text-center"
+          v-for="date in nextMonth"
+          :key="'n'+ date"
         >
           {{ date }}
         </p>
@@ -74,25 +88,32 @@ export default {
   computed: {
     ...mapState(['currentDate']),
     ...mapGetters({ dailyData: 'GET_DAILY_DATA' }),
-    firstDay () {
+    prevMonth () {
       let day = new Date()
       day.setFullYear(this.datePick.year, this.datePick.month, 1)
       return (day.getDay() + 6) % 7
     },
-    isLeapYear () {
-      return this.datePick.year % 400 === 0 ? true : this.datePick.year % 4 === 0 && this.datePick.year % 100 !== 0
-    },
-    HowManyDay () {
-      return this.isLeapYear && this.datePick.month === 1 ? 29 : this.day[this.datePick.month]
+    nextMonth () {
+      let total = this.HowManyDay(this.datePick.year, this.datePick.month) + this.prevMonth > 35 ? 42 : 35
+      return total - (this.HowManyDay(this.datePick.year, this.datePick.month) + this.prevMonth)
     },
     dateTimestamp () {
       return new Date(`${this.datePick.year}-${this.datePick.month + 1}-${this.datePick.date}`).getTime()
     }
   },
   methods: {
+    goToDate () {
+      this.$router.push({ name: 'Daily', params: { timestamp: this.dateTimestamp } })
+    },
     pickDate (date) {
       this.datePick.date = date
-      this.$router.push({ name: 'Daily', params: { timestamp: this.dateTimestamp } })
+      this.goToDate()
+    },
+    isLeapYear (year) {
+      return year % 400 === 0 ? true : year % 4 === 0 && year % 100 !== 0
+    },
+    HowManyDay (year, month) {
+      return this.isLeapYear(year) && month === 1 ? 29 : this.day[month]
     }
   }
 }
@@ -117,8 +138,15 @@ export default {
       &.picked{
         background: #ccc;
       }
-      &.space{
+      &.prevMonth,&.nextMonth{
+        opacity: 0.2;
         cursor: default;
+      }
+      &:nth-child(7n-1){
+        color: red;
+      }
+      &:nth-child(7n){
+        color: red;
       }
     }
   }

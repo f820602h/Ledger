@@ -34,7 +34,14 @@ export default {
         },
         tooltip: {
           enabled: true,
-          pointFormat: '{series.name}: <b>NT$' + '{point.y}</b>'
+          formatter () {
+            return `<span style="color:${this.color}">\u25CF</span><b> ${this.key}</b><br /> 
+            <b>占比：</b> ${Math.floor(this.percentage)}%<br /><b>金額：</b> NT$ ${this.y}`
+          },
+          style: {
+            fontFamily: 'Microsoft JhengHei',
+            lineHeight: '20px'
+          }
         },
         legend: {
           layout: 'vertical',
@@ -51,14 +58,19 @@ export default {
               distance: 3,
               connectorWidth: 1,
               connectorPadding: 0,
-              format: '<b>{point.percentage:.1f}%</b>'
+              format: '<b>{point.percentage:.1f}%</b>',
+              style: {
+                fontFamily: 'Microsoft JhengHei',
+                fontWeight: 'normal',
+                textOutline: 0,
+                color: 'rgb(100,100,100)'
+              }
             },
             showInLegend: true
           }
         },
         series: [{
           type: 'pie',
-          name: '金額',
           data: []
         }],
         responsive: {

@@ -3,7 +3,7 @@
     <Module>
       <div slot="head" class="d-flex justify-content-between align-items-center">
         <h5 class="my-3">日期設定</h5>
-        <router-link :to="'/daily'" class="btn btn-sm btn-info my-2">每日總覽</router-link>
+        <router-link :to="{name: 'Daily', params: { timestamp: this.today }}" class="btn btn-sm btn-info my-2">每日總覽</router-link>
       </div>
       <div slot="body" class="p-4">
         <div class="row align-items-center justify-content-between">
@@ -84,10 +84,6 @@ export default {
     }
   },
   watch: {
-    today () {
-      this.getThisWeek()
-      this.SET_DATE_RANGE(this.dateRange)
-    },
     dataMode () {
       if (this.dataMode === 'week') this.getThisWeek()
       if (this.dataMode === 'month') this.getThisMonth()
