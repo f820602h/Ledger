@@ -8,8 +8,7 @@ Vue.use(Vuelidate)
 
 export default new Vuex.Store({
   state: {
-    user: '',
-    loginState: null,
+    loginState: false,
     today: '',
     currentDate: '',
     dateRange: {},
@@ -18,9 +17,6 @@ export default new Vuex.Store({
     typeList: {}
   },
   mutations: {
-    SET_USER (state, payload) {
-      state.user = payload
-    },
     SET_LOGIN_STATE (state, payload) {
       state.loginState = payload
     },
@@ -44,23 +40,31 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    LOGIN_CHECK ({ commit, dispatch }, payload) {
+    LOGIN ({ commit, dispatch }, payload) {
       axios.post(`${process.env.VUE_APP_URL}/ledger/login`, payload)
         .then(res => {
           if (res.data.success) {
+            dispatch('INIT_DATA')
             commit('SET_LOGIN_STATE', true)
-            dispatch('INIT_DATA', payload.account)
           } else {
+            // 登入失敗處理
+            console.log(res)
             commit('SET_LOGIN_STATE', false)
           }
         })
     },
 
-    INIT_DATA ({ commit, dispatch }, account) {
+    // LOGIN_CHECK ({ commit, dispatch }) {
+    //   axios.get(`${process.env.VUE_APP_URL}/ledger/login`).then(res => {
+    //     if (res.data.success) dispatch('INIT_DATA')
+    //     commit('SET_LOGIN_STATE', res.data.success)
+    //   })
+    // },
+
+    INIT_DATA ({ commit, dispatch }) {
       dispatch('GET_TODAY_TIME_STAMP')
-      axios.get(`${process.env.VUE_APP_URL}/ledger/${account}`)
+      axios.get(`${process.env.VUE_APP_URL}/ledger/`)
         .then(res => {
-          commit('SET_USER', res.data.body.account.email)
           commit('SET_LEDGER', res.data.body.ledger)
           commit('SET_SAVE', res.data.body.save)
           commit('SET_TYPE_LIST', res.data.body.type)
@@ -83,7 +87,7 @@ export default new Vuex.Store({
       let newSave = data.sheet === 'pay' ? state.save - data.cost : state.save + data.cost
       let newLedger = state.ledger.slice()
       newLedger.push(data)
-      axios.post(`${process.env.VUE_APP_URL}/ledger/${state.user}`, { newLedger, newSave })
+      axios.post(`${process.env.VUE_APP_URL}/ledger`, { newLedger, newSave })
         .then(() => {
           commit('SET_LEDGER', newLedger)
           commit('SET_SAVE', newSave)
@@ -97,7 +101,7 @@ export default new Vuex.Store({
         return item.updateTime !== data.old.updateTime
       })
       newLedger.push(data.new)
-      axios.post(`${process.env.VUE_APP_URL}/ledger/${state.user}`, { newLedger, newSave })
+      axios.post(`${process.env.VUE_APP_URL}/ledger`, { newLedger, newSave })
         .then(() => {
           commit('SET_LEDGER', newLedger)
           commit('SET_SAVE', newSave)
@@ -109,7 +113,7 @@ export default new Vuex.Store({
       let newLedger = state.ledger.slice().filter((item) => {
         return item.updateTime !== data.updateTime
       })
-      axios.post(`${process.env.VUE_APP_URL}/ledger/${state.user}`, { newLedger, newSave })
+      axios.post(`${process.env.VUE_APP_URL}/ledger`, { newLedger, newSave })
         .then(() => {
           commit('SET_LEDGER', newLedger)
           commit('SET_SAVE', newSave)
@@ -117,7 +121,7 @@ export default new Vuex.Store({
     },
 
     RESET_SAVE ({ state, commit }, newSave) {
-      axios.post(`${process.env.VUE_APP_URL}/ledger/save/${state.user}`, { newSave })
+      axios.post(`${process.env.VUE_APP_URL}/ledger/save`, { newSave })
         .then(() => {
           commit('SET_SAVE', newSave)
         })

@@ -2,6 +2,7 @@ const createError = require('http-errors')
 const express = require('express')
 const path = require('path')
 const cookieParser = require('cookie-parser')
+const session = require('express-session')
 const logger = require('morgan')
 
 const webpack = require('webpack')
@@ -26,6 +27,13 @@ app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
+app.use(session({
+  name: 'ledger_login',
+  secret: 'ilovemoney',
+  resave: true,
+  saveUninitialized: true,
+  cookie: { maxAge: 60 * 1000 * 30 }
+}))
 app.use(express.static(path.join(__dirname, '../public')))
 
 app.use('/ledger', ledgerRouter)

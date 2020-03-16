@@ -12,7 +12,6 @@
         <input type="password" class="form-control" id="password" placeholder="密碼" v-model="$v.loginform.password.$model" @keydown.enter="login">
       </div>
       <p class="error text-danger mt-3" v-if="$v.loginform.$invalid && $v.loginform.$dirty">請填妥您的帳號及密碼</p>
-      <p class="error text-danger mt-3" v-if="loginDefeat">輸入的帳號或密碼不存在</p>
       <button class="btn btn-sm btn-info mt-4 mx-auto" @click="login">登入</button>
       <a href="#" class="badge mt-2">註冊帳號</a>
     </div>
@@ -29,8 +28,7 @@ export default {
       loginform: {
         account: '',
         password: ''
-      },
-      loginDefeat: false
+      }
     }
   },
   validations: {
@@ -50,16 +48,15 @@ export default {
   },
   watch: {
     loginState (value) {
-      this.loginDefeat = !value
       if (value) this.$router.push(`/daily/${this.today}`)
     }
   },
   methods: {
-    ...mapActions(['LOGIN_CHECK']),
+    ...mapActions(['LOGIN']),
     login () {
       this.$v.loginform.$touch()
       if (!this.$v.loginform.$invalid) {
-        this.LOGIN_CHECK(this.loginform)
+        this.LOGIN(this.loginform)
       }
     }
   }

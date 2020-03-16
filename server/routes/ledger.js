@@ -21,26 +21,37 @@ firebase.initializeApp(firebaseConfig)
 const db = firebase.firestore().collection('ledger')
 
 router.post('/login', function (req, res) {
-  const ref = db.doc(req.body.account)
-  ref.get().then(data => {
-    if (data.data().account.password === req.body.password) {
+  firebase.auth().signInWithEmailAndPassword(req.body.account, req.body.password)
+    .then(() => {
+      req.session.uid = firebase.auth().currentUser.uid
       res.json({
         success: true
       })
-    } else {
+    })
+    .catch(function (error) {
       res.json({
-        success: false
+        success: false,
+        msg: error.message
       })
-    }
-  }).catch(() => {
+    })
+})
+
+router.get('/login', function (req, res) {
+  const uid = req.session.uid
+  if (uid) {
+    res.json({
+      success: true
+    })
+  } else {
     res.json({
       success: false
     })
-  })
+  }
 })
 
-router.get('/:account', function (req, res) {
-  const ref = db.doc(req.params.account)
+router.get('/', function (req, res) {
+  const uid = req.session.uid
+  const ref = db.doc(uid)
   ref.get().then(data => {
     if (data.data()) {
       res.json({
@@ -59,8 +70,9 @@ router.get('/:account', function (req, res) {
   })
 })
 
-router.post('/:account', function (req, res) {
-  const ref = db.doc(req.params.account)
+router.post('/', function (req, res) {
+  const uid = req.session.uid
+  const ref = db.doc(uid)
   ref.set({
     ledger: req.body.newLedger,
     save: req.body.newSave
@@ -76,8 +88,9 @@ router.post('/:account', function (req, res) {
     })
 })
 
-router.post('/save/:account', function (req, res) {
-  const ref = db.doc(req.params.account)
+router.post('/save', function (req, res) {
+  const uid = req.session.uid
+  const ref = db.doc(uid)
   ref.set({
     save: req.body.newSave
   }, { merge: true })

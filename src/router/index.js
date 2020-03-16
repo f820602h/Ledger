@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import axios from 'axios'
 import Daily from '@/views/Daily'
 import Login from '@/views/Login'
 import DashBoard from '@/views/DashBoard'
@@ -39,9 +40,25 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (!store.state.loginState && to.name !== 'Login') next('/')
-  else if (store.state.loginState && to.name === 'Login') next(`/daily/${store.state.today}`)
-  else next()
+  if (to.name === 'Login') {
+    if (store.state.loginState) next(`/daily/${store.state.today}`)
+    else next()
+  }
+  if (to.name !== 'Login') {
+    if (store.state.loginState) next()
+    else {
+      axios.get(`${process.env.VUE_APP_URL}/ledger/login`).then(res => {
+        if (res.data.success) {
+          store.commit('SET_LOGIN_STATE', true)
+          store.dispatch('INIT_DATA')
+          next()
+        } else {
+          store.commit('SET_LOGIN_STATE', false)
+          next('/')
+        }
+      })
+    }
+  }
 })
 
 export default router
