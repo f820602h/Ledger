@@ -13,12 +13,14 @@
       </div>
       <p class="error text-danger mt-3" v-if="$v.loginform.$invalid && $v.loginform.$dirty">請填妥您的帳號及密碼</p>
       <button class="btn btn-sm btn-info mt-4 mx-auto" @click="login">登入</button>
-      <a href="#" class="badge mt-2">註冊帳號</a>
+      <a href="#" class="badge mt-2" @click="toggleSignUpPopup(true)">註冊帳號</a>
     </div>
+    <SignUpPopup v-if="signUpPopupIsShow" @toggleSignUpPopup="toggleSignUpPopup" />
   </div>
 </template>
 
 <script>
+import SignUpPopup from '@/components/utility/SignUpPopup'
 import { required, email, alphaNum } from 'vuelidate/lib/validators'
 import { mapActions, mapState } from 'vuex'
 export default {
@@ -28,7 +30,8 @@ export default {
       loginform: {
         account: '',
         password: ''
-      }
+      },
+      signUpPopupIsShow: false
     }
   },
   validations: {
@@ -43,6 +46,9 @@ export default {
       }
     }
   },
+  components: {
+    SignUpPopup
+  },
   computed: {
     ...mapState(['loginState', 'today'])
   },
@@ -53,6 +59,9 @@ export default {
   },
   methods: {
     ...mapActions(['LOGIN']),
+    toggleSignUpPopup (state) {
+      this.signUpPopupIsShow = state
+    },
     login () {
       this.$v.loginform.$touch()
       if (!this.$v.loginform.$invalid) {

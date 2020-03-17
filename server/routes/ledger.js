@@ -20,10 +20,42 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 const db = firebase.firestore().collection('ledger')
 
+router.post('/signup', function (req, res) {
+  firebase.auth().signInWithEmailAndPassword(req.body.account, req.body.password)
+    .then(() => {
+      res.json({
+        success: true
+      })
+    })
+    .catch(function (error) {
+      res.json({
+        success: false,
+        msg: error.message
+      })
+    })
+})
+
 router.post('/login', function (req, res) {
   firebase.auth().signInWithEmailAndPassword(req.body.account, req.body.password)
     .then(() => {
       req.session.uid = firebase.auth().currentUser.uid
+      res.json({
+        success: true
+      })
+    })
+    .catch(function (error) {
+      res.json({
+        success: false,
+        msg: error.message
+      })
+    })
+})
+
+router.get('/logout', function (req, res) {
+  firebase.auth().signOut()
+    .then(() => {
+      res.clearCookie('ledger_login', { path: '/' })
+      delete req.session.uid
       res.json({
         success: true
       })

@@ -67,7 +67,7 @@
         </div>
       </div>
     </Module>
-    <EditPopup v-if="EditPopupIsShow" @toggleEditPopup="toggleEditPopup" :term="editTerm"/>
+    <EditPopup v-if="editPopupIsShow" @toggleEditPopup="toggleEditPopup" :term="editTerm"/>
     <DelePopup v-if="delePopupIsShow" @toggleDelePopup="toggleDelePopup" :term="deleTerm"/>
   </div>
 </template>
@@ -93,7 +93,7 @@ export default {
       },
       editTerm: {},
       deleTerm: {},
-      EditPopupIsShow: false,
+      editPopupIsShow: false,
       delePopupIsShow: false
     }
   },
@@ -142,7 +142,7 @@ export default {
       this.toggleEditPopup(true)
     },
     toggleEditPopup (state) {
-      this.EditPopupIsShow = state
+      this.editPopupIsShow = state
     },
     deleData (term) {
       this.deleTerm = term

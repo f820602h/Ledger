@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import router from '@/router'
 import Vuelidate from 'vuelidate'
 
 Vue.use(Vuex)
@@ -8,6 +9,7 @@ Vue.use(Vuelidate)
 
 export default new Vuex.Store({
   state: {
+    user: '',
     loginState: false,
     today: '',
     currentDate: '',
@@ -17,6 +19,9 @@ export default new Vuex.Store({
     typeList: {}
   },
   mutations: {
+    SET_USER (state, payload) {
+      state.user = payload
+    },
     SET_LOGIN_STATE (state, payload) {
       state.loginState = payload
     },
@@ -40,6 +45,17 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    SIGNUP ({ commit, dispatch }, payload) {
+      axios.post(`${process.env.VUE_APP_URL}/ledger/signup`, payload)
+        .then(res => {
+          if (res.data.success) {
+            console.log('註冊成功')
+          } else {
+            console.log(res.data.msg)
+          }
+        })
+    },
+
     LOGIN ({ commit, dispatch }, payload) {
       axios.post(`${process.env.VUE_APP_URL}/ledger/login`, payload)
         .then(res => {
@@ -47,24 +63,29 @@ export default new Vuex.Store({
             dispatch('INIT_DATA')
             commit('SET_LOGIN_STATE', true)
           } else {
-            // 登入失敗處理
-            console.log(res)
+            console.log(res.data.msg)
             commit('SET_LOGIN_STATE', false)
           }
         })
     },
 
-    // LOGIN_CHECK ({ commit, dispatch }) {
-    //   axios.get(`${process.env.VUE_APP_URL}/ledger/login`).then(res => {
-    //     if (res.data.success) dispatch('INIT_DATA')
-    //     commit('SET_LOGIN_STATE', res.data.success)
-    //   })
-    // },
+    LOGOUT ({ commit }, payload) {
+      axios.get(`${process.env.VUE_APP_URL}/ledger/logout`, payload)
+        .then(res => {
+          if (res.data.success) {
+            commit('SET_LOGIN_STATE', false)
+            router.push('/')
+          } else {
+            console.log(res.data.msg)
+          }
+        })
+    },
 
     INIT_DATA ({ commit, dispatch }) {
       dispatch('GET_TODAY_TIME_STAMP')
       axios.get(`${process.env.VUE_APP_URL}/ledger/`)
         .then(res => {
+          commit('SET_USER', res.data.body.name)
           commit('SET_LEDGER', res.data.body.ledger)
           commit('SET_SAVE', res.data.body.save)
           commit('SET_TYPE_LIST', res.data.body.type)

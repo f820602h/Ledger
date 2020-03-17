@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <div class="container py-4">
+    <UserBar v-if="isLoginPage" />
+    <div class="container pt-2 pb-4">
       <router-view/>
     </div>
     <div class="replace"></div>
@@ -10,6 +11,7 @@
 </template>
 
 <script>
+import UserBar from '@/components/modules/UserBar'
 import ActionBar from '@/components/utility/ActionBar'
 import AddPopup from '@/components/utility/AddPopup'
 export default {
@@ -20,6 +22,7 @@ export default {
     }
   },
   components: {
+    UserBar,
     ActionBar,
     AddPopup
   },
