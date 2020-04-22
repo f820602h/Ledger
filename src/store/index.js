@@ -16,7 +16,8 @@ export default new Vuex.Store({
     dateRange: {},
     save: 0,
     ledger: [],
-    typeList: {}
+    typeList: {},
+    alertObj: {}
   },
   mutations: {
     SET_USER (state, payload) {
@@ -42,6 +43,9 @@ export default new Vuex.Store({
     },
     SET_DATE_RANGE (state, payload) {
       state.dateRange = payload
+    },
+    SET_ALERT_OBJ (state, payload) {
+      state.alertObj = payload
     }
   },
   actions: {
@@ -49,9 +53,18 @@ export default new Vuex.Store({
       axios.post(`${process.env.VUE_APP_URL}/ledger/signup`, payload)
         .then(res => {
           if (res.data.success) {
-            console.log('註冊成功')
-          } else {
-            console.log(res.data.msg)
+            commit('SET_ALERT_OBJ', {
+              type: 'success',
+              message: '註冊成功，歡迎您成為記帳本會員，將為您自動登入。',
+              onClose () {
+                dispatch('LOGIN', payload)
+              }
+            })
+          } else if (res.data.code === 'auth/email-already-in-use') {
+            commit('SET_ALERT_OBJ', {
+              type: 'error',
+              message: '此信箱已被註冊，請確認您的信箱是否正確。'
+            })
           }
         })
     },

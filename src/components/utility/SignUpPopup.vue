@@ -9,12 +9,31 @@
           </div>
           <div class="modal-body">
             <div class="input-group">
+              <div class="input-group-prepend"><span class="input-group-text">名稱</span></div>
+              <input type="text" class="form-control" placeholder="請輸入用戶名稱(暱稱)" v-model.trim="$v.signupform.name.$model">
+            </div>
+            <template v-if="$v.signupform.password.$dirty">
+              <p class="error text-danger" v-if="!signupform.name">請輸入用戶名稱(暱稱)</p>
+            </template>
+
+            <div class="input-group mt-4">
+              <div class="input-group-prepend"><span class="input-group-text">存款</span></div>
+              <input type="text" class="form-control" placeholder="請輸入您目前存款金額" v-model.trim="$v.signupform.save.$model">
+              <div class="input-group-append"><span class="input-group-text">NT$</span></div>
+            </div>
+            <template v-if="$v.signupform.account.$dirty">
+              <p class="error text-danger" v-if="!signupform.save">請輸入金額</p>
+              <p class="error text-danger" v-if="!$v.signupform.save.numeric">請避免輸入非數字之符號</p>
+              <p class="error text-danger" v-if="!$v.signupform.save.rex">請勿輸入以0為開頭之數字</p>
+            </template>
+
+            <div class="input-group mt-4">
               <div class="input-group-prepend"><span class="input-group-text">帳號</span></div>
               <input type="text" class="form-control" placeholder="電子信箱" v-model.trim="$v.signupform.account.$model">
             </div>
             <template v-if="$v.signupform.account.$dirty">
               <p class="error text-danger" v-if="!signupform.account">請輸入您的電子信箱</p>
-              <p class="error text-danger" v-if="$v.signupform.account.email">請輸入正確的信箱格式</p>
+              <p class="error text-danger" v-if="!$v.signupform.account.email">請輸入正確的信箱格式</p>
             </template>
 
             <div class="input-group mt-4">
@@ -23,9 +42,10 @@
             </div>
             <template v-if="$v.signupform.password.$dirty">
               <p class="error text-danger" v-if="!signupform.password">請輸入您要設定的密碼</p>
-              <p class="error text-danger" v-if="$v.signupform.password.alphaNum">僅接受英文和數字</p>
-              <p class="error text-danger" v-if="$v.signupform.password.minLength">密碼長度至少要六位</p>
+              <p class="error text-danger" v-if="!$v.signupform.password.alphaNum">僅接受英文和數字</p>
+              <p class="error text-danger" v-if="!$v.signupform.password.minLength">密碼長度至少要六位</p>
             </template>
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" @click="toggleSignUpPopup(false)">取消</button>
@@ -38,13 +58,15 @@
 </template>
 
 <script>
-import { required, email, alphaNum, minLength } from 'vuelidate/lib/validators'
+import { required, email, numeric, alphaNum, minLength } from 'vuelidate/lib/validators'
 import { mapActions } from 'vuex'
 export default {
   name: 'EditPopup',
   data () {
     return {
       signupform: {
+        name: '',
+        save: '',
         account: '',
         password: ''
       }
@@ -52,6 +74,18 @@ export default {
   },
   validations: {
     signupform: {
+      name: {
+        required
+      },
+      save: {
+        required,
+        numeric,
+        rex: (value) => {
+          if (value === '') return true
+          var rex = new RegExp(/^0/)
+          return !rex.test(value)
+        }
+      },
       account: {
         required,
         email

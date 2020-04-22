@@ -50,11 +50,14 @@ export default {
     SignUpPopup
   },
   computed: {
-    ...mapState(['loginState', 'today'])
+    ...mapState(['loginState', 'today', 'alertObj'])
   },
   watch: {
     loginState (value) {
       if (value) this.$router.push(`/daily/${this.today}`)
+    },
+    alertObj (value) {
+      this.$message(value)
     }
   },
   methods: {

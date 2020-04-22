@@ -6,11 +6,16 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import Highcahrts from 'highcharts'
 
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+
 import 'bootstrap'
 import '@/assets/main.scss'
 
 Vue.use(VueAxios, axios)
 Vue.config.productionTip = false
+
+Vue.use(ElementUI)
 
 Highcahrts.setOptions({
   lang: {

@@ -21,15 +21,28 @@ firebase.initializeApp(firebaseConfig)
 const db = firebase.firestore().collection('ledger')
 
 router.post('/signup', function (req, res) {
-  firebase.auth().signInWithEmailAndPassword(req.body.account, req.body.password)
-    .then(() => {
-      res.json({
-        success: true
+  firebase.auth().createUserWithEmailAndPassword(req.body.account, req.body.password)
+    .then((user) => {
+      console.log(user.user)
+      const ref = db.doc(user.user.uid)
+      ref.set({
+        ledger: [],
+        name: req.body.name,
+        save: req.body.save,
+        type: {
+          income: ['薪資', '獎金', '投資'],
+          pay: ['伙食', '交通', '房租', '娛樂', '購物']
+        }
+      }).then(() => {
+        res.json({
+          success: true
+        })
       })
     })
     .catch(function (error) {
       res.json({
         success: false,
+        code: error.code,
         msg: error.message
       })
     })
