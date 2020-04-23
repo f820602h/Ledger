@@ -1,4 +1,4 @@
-# todolist
+# Vue Cli + Express 4 + firebase 記帳本
 
 ## Project setup
 ```
