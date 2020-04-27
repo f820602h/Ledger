@@ -56,8 +56,8 @@ export default {
     loginState (value) {
       if (value) this.$router.push(`/daily/${this.today}`)
     },
-    alertObj (value) {
-      this.$message(value)
+    alertObj (newVal, oldVal) {
+      if (newVal !== oldVal) this.$message(newVal)
     }
   },
   methods: {

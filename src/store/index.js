@@ -76,8 +76,11 @@ export default new Vuex.Store({
             dispatch('INIT_DATA')
             commit('SET_LOGIN_STATE', true)
           } else {
-            console.log(res.data.msg)
             commit('SET_LOGIN_STATE', false)
+            commit('SET_ALERT_OBJ', {
+              type: 'error',
+              message: '您的帳號或密碼錯誤，請輸入正確的帳號密碼。'
+            })
           }
         })
     },
@@ -261,6 +264,7 @@ export default new Vuex.Store({
           data: costPool[i]
         })
       }
+      if (!data.length) return data
       data.push({
         type: 'column',
         name: '總消費',
