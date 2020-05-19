@@ -121,7 +121,9 @@ export default new Vuex.Store({
     },
 
     ADD_NEW_DATA ({ state, commit }, data) {
-      let newSave = data.sheet === 'pay' ? state.save - data.cost : state.save + data.cost
+      let save = Number(state.save)
+      let cost = Number(data.cost)
+      let newSave = data.sheet === 'pay' ? save - cost : save + cost
       let newLedger = state.ledger.slice()
       newLedger.push(data)
       axios.post(`${process.env.VUE_APP_URL}/ledger`, { newLedger, newSave })
@@ -132,8 +134,11 @@ export default new Vuex.Store({
     },
 
     EDIT_DATA ({ state, commit }, data) {
-      let newSave = data.old.sheet === 'pay' ? state.save + data.old.cost : state.save - data.old.cost
-      newSave = data.new.sheet === 'pay' ? newSave - data.new.cost : newSave + data.new.cost
+      let save = Number(state.save)
+      let oldCost = Number(data.old.cost)
+      let newCost = Number(data.new.cost)
+      let newSave = data.old.sheet === 'pay' ? save + oldCost : save - oldCost
+      newSave = data.new.sheet === 'pay' ? newSave - newCost : newSave + newCost
       let newLedger = state.ledger.slice().filter((item) => {
         return item.updateTime !== data.old.updateTime
       })
@@ -146,7 +151,9 @@ export default new Vuex.Store({
     },
 
     DELE_DATA ({ state, commit }, data) {
-      let newSave = data.sheet === 'pay' ? state.save + data.cost : state.save - data.cost
+      let save = Number(state.save)
+      let cost = Number(data.cost)
+      let newSave = data.sheet === 'pay' ? save + cost : save - cost
       let newLedger = state.ledger.slice().filter((item) => {
         return item.updateTime !== data.updateTime
       })
@@ -158,7 +165,7 @@ export default new Vuex.Store({
     },
 
     RESET_SAVE ({ state, commit }, newSave) {
-      axios.post(`${process.env.VUE_APP_URL}/ledger/save`, { newSave })
+      axios.post(`${process.env.VUE_APP_URL}/ledger/save`, { newSave: Number(newSave) })
         .then(() => {
           commit('SET_SAVE', newSave)
         })
