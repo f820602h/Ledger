@@ -30,9 +30,9 @@ app.use(cookieParser())
 app.use(session({
   name: 'ledger_login',
   secret: 'ilovemoney',
-  resave: true,
+  resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 60 * 1000 * 30 }
+  cookie: { maxAge: 60 * 1000 * 30, sameSite: true }
 }))
 app.use(express.static(path.join(__dirname, '../public')))
 
