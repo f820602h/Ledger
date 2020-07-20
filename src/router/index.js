@@ -42,7 +42,7 @@ router.beforeEach((to, from, next) => {
   if (to.name === 'Login') {
     if (store.state.loginState) next(`/daily/${store.state.today}`)
     else {
-      axios.get(`${process.env.VUE_APP_URL}/ledger/login`).then(res => {
+      axios.get(`${process.env.VUE_APP_URL}ledger/login`).then(res => {
         if (res.data.success) {
           store.commit('SET_LOGIN_STATE', true)
           store.dispatch('INIT_DATA').then(() => {
@@ -58,7 +58,7 @@ router.beforeEach((to, from, next) => {
   if (to.name !== 'Login') {
     if (store.state.loginState) next()
     else {
-      axios.get(`${process.env.VUE_APP_URL}/ledger/login`).then(res => {
+      axios.get(`${process.env.VUE_APP_URL}ledger/login`).then(res => {
         if (res.data.success) {
           store.commit('SET_LOGIN_STATE', true)
           store.dispatch('INIT_DATA').then(() => {

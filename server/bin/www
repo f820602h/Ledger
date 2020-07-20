@@ -5,7 +5,7 @@
  */
 
 var app = require('../app')
-var debug = require('debug')('ledger:*npm start')
+var debug = require('debug')('ledger:serve')
 var http = require('http')
 
 /**
