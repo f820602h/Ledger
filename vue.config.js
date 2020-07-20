@@ -1,6 +1,6 @@
 const path = require('path')
 module.exports = {
-  // publicPath: '/',
+  publicPath: '/',
   lintOnSave: true,
   outputDir: path.resolve(__dirname, './server/dist'),
   chainWebpack: config => {
