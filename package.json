@@ -9,7 +9,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "dev": "nodemon ./server/bin/www",
-    "start": "node ./server/bin/www"
+    "start": "set NODE_ENV=production&&node ./server/bin/www"
   },
   "dependencies": {
     "@vue/cli-plugin-babel": "^4.1.0",
