@@ -1,5 +1,5 @@
 # 線上記帳本
-#### DEMO: [https://max-ledger.herokuapp.com/#/](https://max-ledger.herokuapp.com/#/)**
+#### DEMO: [https://max-ledger.herokuapp.com/#/](https://max-ledger.herokuapp.com/#/)
 嘗試結合 Vue Cli3 及 Express 4 建構前後端分離的 SPA 應用架構，並且搭配 Google firebase 資料庫以及 HighCharts 圖表庫來作資料的儲存及圖像化。
 
 ## 技術資源
