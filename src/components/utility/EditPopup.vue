@@ -118,7 +118,7 @@ export default {
         required,
         numeric,
         rex: (value) => {
-          if (value === '') return true
+          if (value === '' || value === '0') return true
           var rex = new RegExp(/^0/)
           return !rex.test(value)
         }
