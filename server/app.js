@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser')
 const cookieSession = require('cookie-session')
 const logger = require('morgan')
 
+const history = require('connect-history-api-fallback')
+
 const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
@@ -27,7 +29,8 @@ app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
-app.use(express.static(path.join(__dirname, '../public')))
+app.use(history())
+app.use(express.static(path.join(__dirname, '../dist')))
 
 app.set('trust proxy', 1) // trust first proxy
 app.use(cookieSession({
