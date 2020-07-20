@@ -7,6 +7,7 @@
     <div class="replace"></div>
     <ActionBar @toggleAddPopup="toggleAddPopup" v-if="isLoginPage"/>
     <AddPopup v-if="AddPopupIsShow" @toggleAddPopup="toggleAddPopup"/>
+    <Loading />
   </div>
 </template>
 
@@ -14,6 +15,7 @@
 import UserBar from '@/components/modules/UserBar'
 import ActionBar from '@/components/utility/ActionBar'
 import AddPopup from '@/components/utility/AddPopup'
+import Loading from '@/components/utility/Loading'
 export default {
   name: 'App',
   data () {
@@ -24,7 +26,8 @@ export default {
   components: {
     UserBar,
     ActionBar,
-    AddPopup
+    AddPopup,
+    Loading
   },
   computed: {
     isLoginPage () {

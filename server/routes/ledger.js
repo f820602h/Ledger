@@ -20,19 +20,8 @@ const db = firebase.firestore().collection('ledger')
 router.post('/signup', function (req, res) {
   firebase.auth().createUserWithEmailAndPassword(req.body.account, req.body.password)
     .then((user) => {
-      const ref = db.doc(user.user.uid)
-      ref.set({
-        ledger: [],
-        name: req.body.name,
-        save: req.body.save,
-        type: {
-          income: ['薪資', '獎金', '投資'],
-          pay: ['伙食', '交通', '房租', '娛樂', '購物']
-        }
-      }).then(() => {
-        res.json({
-          success: true
-        })
+      res.json({
+        success: true
       })
     })
     .catch(function (error) {
@@ -48,23 +37,28 @@ router.post('/login', function (req, res) {
   firebase.auth().signInWithEmailAndPassword(req.body.account, req.body.password)
     .then(() => {
       req.session.uid = firebase.auth().currentUser.uid
-      res.json({
-        success: true
-      })
-    })
-    .catch(function (error) {
-      res.json({
-        success: false,
-        msg: error.message
-      })
-    })
-})
-
-router.get('/logout', function (req, res) {
-  firebase.auth().signOut()
-    .then(() => {
-      res.clearCookie('ledger_login', { path: '/' })
-      req.session = null
+      if (req.body.init) {
+        const uid = req.session.uid
+        const ref = db.doc(uid)
+        ref.set({
+          ledger: [],
+          name: req.body.name,
+          save: req.body.save,
+          type: {
+            income: ['薪資', '獎金', '投資'],
+            pay: ['伙食', '交通', '房租', '娛樂', '購物']
+          }
+        }).then(() => {
+          res.json({
+            success: true
+          })
+        }).catch(function (err) {
+          res.json({
+            success: false,
+            body: err
+          })
+        })
+      }
       res.json({
         success: true
       })
@@ -88,6 +82,23 @@ router.get('/login', function (req, res) {
       success: false
     })
   }
+})
+
+router.get('/logout', function (req, res) {
+  firebase.auth().signOut()
+    .then(() => {
+      res.clearCookie('ledger_login', { path: '/' })
+      req.session = null
+      res.json({
+        success: true
+      })
+    })
+    .catch(function (error) {
+      res.json({
+        success: false,
+        msg: error.message
+      })
+    })
 })
 
 router.get('/', function (req, res) {

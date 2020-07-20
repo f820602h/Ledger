@@ -17,7 +17,8 @@ export default new Vuex.Store({
     save: 0,
     ledger: [],
     typeList: {},
-    alertObj: {}
+    alertObj: {},
+    loading: false
   },
   mutations: {
     SET_USER (state, payload) {
@@ -46,10 +47,14 @@ export default new Vuex.Store({
     },
     SET_ALERT_OBJ (state, payload) {
       state.alertObj = payload
+    },
+    SET_LOADING (state, payload) {
+      state.loading = payload
     }
   },
   actions: {
     SIGNUP ({ commit, dispatch }, payload) {
+      commit('SET_LOADING', true)
       axios.post(`${process.env.VUE_APP_URL}ledger/signup`, payload)
         .then(res => {
           if (res.data.success) {
@@ -57,7 +62,7 @@ export default new Vuex.Store({
               type: 'success',
               message: '註冊成功，歡迎您成為記帳本會員，將為您自動登入。',
               onClose () {
-                dispatch('LOGIN', payload)
+                dispatch('LOGIN', { init: true, ...payload })
               }
             })
           } else if (res.data.code === 'auth/email-already-in-use') {
@@ -65,22 +70,27 @@ export default new Vuex.Store({
               type: 'error',
               message: '此信箱已被註冊，請確認您的信箱是否正確。'
             })
+            commit('SET_LOADING', false)
           }
         })
     },
 
     LOGIN ({ commit, dispatch }, payload) {
+      commit('SET_LOADING', true)
       axios.post(`${process.env.VUE_APP_URL}ledger/login`, payload)
         .then(res => {
           if (res.data.success) {
-            dispatch('INIT_DATA')
-            commit('SET_LOGIN_STATE', true)
+            dispatch('INIT_DATA').then(() => {
+              commit('SET_LOGIN_STATE', true)
+              commit('SET_LOADING', false)
+            })
           } else {
             commit('SET_LOGIN_STATE', false)
             commit('SET_ALERT_OBJ', {
               type: 'error',
               message: '您的帳號或密碼錯誤，請輸入正確的帳號密碼。'
             })
+            commit('SET_LOADING', false)
           }
         })
     },
