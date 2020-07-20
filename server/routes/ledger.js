@@ -2,9 +2,6 @@ const express = require('express')
 const firebase = require('firebase')
 require('dotenv').config()
 
-// 載入 jwt
-// var jwt = require('jsonwebtoken')
-
 const router = express.Router()
 const firebaseConfig = {
   apiKey: process.env.apiKey,
@@ -23,7 +20,6 @@ const db = firebase.firestore().collection('ledger')
 router.post('/signup', function (req, res) {
   firebase.auth().createUserWithEmailAndPassword(req.body.account, req.body.password)
     .then((user) => {
-      console.log(user.user)
       const ref = db.doc(user.user.uid)
       ref.set({
         ledger: [],
@@ -68,7 +64,7 @@ router.get('/logout', function (req, res) {
   firebase.auth().signOut()
     .then(() => {
       res.clearCookie('ledger_login', { path: '/' })
-      delete req.session.uid
+      req.session = null
       res.json({
         success: true
       })

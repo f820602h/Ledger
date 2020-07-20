@@ -9,7 +9,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "dev": "nodemon ./server/bin/www",
-    "start": "vue-cli-service build & node ./server/bin/www"
+    "start": "node ./server/bin/www"
   },
   "dependencies": {
     "@vue/cli-plugin-babel": "^4.1.0",
@@ -23,6 +23,7 @@
     "bootstrap": "^4.4.1",
     "connect-redis": "^5.0.0",
     "cookie-parser": "~1.4.4",
+    "cookie-session": "^1.4.0",
     "core-js": "^3.4.3",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",

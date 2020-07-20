@@ -2,10 +2,7 @@ const createError = require('http-errors')
 const express = require('express')
 const path = require('path')
 const cookieParser = require('cookie-parser')
-const session = require('express-session')
-const redis = require('redis')
-let RedisStore = require('connect-redis')(session)
-let redisClient = redis.createClient()
+const cookieSession = require('cookie-session')
 const logger = require('morgan')
 
 const webpack = require('webpack')
@@ -25,31 +22,21 @@ app.use(webpackDevMiddleware(compiler, {
 }))
 app.use(webpackHotMiddleware(compiler))
 
-app.set('trust proxy', 1)
-
 // middleware
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
-app.use(session({
-  store: new RedisStore({ client: redisClient }),
-  name: 'ledger_login',
-  secret: 'ilovemoney',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 60 * 1000 * 30, sameSite: true }
-}))
 app.use(express.static(path.join(__dirname, '../public')))
 
-app.use('/ledger', ledgerRouter)
+app.set('trust proxy', 1) // trust first proxy
+app.use(cookieSession({
+  name: 'ledger_login',
+  keys: ['ilovemoney'],
+  maxAge: 24 * 60 * 60 * 1000
+}))
 
-app.use(function (req, res, next) {
-  if (!req.session) {
-    return next(new Error('Oh no')) // handle error
-  }
-  next() // otherwise continue
-})
+app.use('/ledger', ledgerRouter)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

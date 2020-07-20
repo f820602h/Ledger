@@ -34,7 +34,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'hash',
+  mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
@@ -42,7 +42,18 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (to.name === 'Login') {
     if (store.state.loginState) next(`/daily/${store.state.today}`)
-    else next()
+    else {
+      axios.get(`${process.env.VUE_APP_URL}/ledger/login`).then(res => {
+        if (res.data.success) {
+          store.commit('SET_LOGIN_STATE', true)
+          store.dispatch('INIT_DATA')
+          next(`/daily/${store.state.today}`)
+        } else {
+          store.commit('SET_LOGIN_STATE', false)
+          next()
+        }
+      })
+    }
   }
   if (to.name !== 'Login') {
     if (store.state.loginState) next()
