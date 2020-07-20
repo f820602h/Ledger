@@ -1,8 +1,6 @@
 const path = require('path')
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/Ledger/'
-    : '/',
+  publicPath: '/',
   lintOnSave: true,
   outputDir: path.resolve(__dirname, './server/dist'),
   chainWebpack: config => {
