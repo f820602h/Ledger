@@ -91,21 +91,22 @@ export default new Vuex.Store({
           if (res.data.success) {
             commit('SET_LOGIN_STATE', false)
             router.push('/')
-          } else {
-            console.log(res.data.msg)
           }
         })
     },
 
     INIT_DATA ({ commit, dispatch }) {
-      dispatch('GET_TODAY_TIME_STAMP')
-      axios.get(`${process.env.VUE_APP_URL}/ledger/`)
-        .then(res => {
-          commit('SET_USER', res.data.body.name)
-          commit('SET_LEDGER', res.data.body.ledger)
-          commit('SET_SAVE', res.data.body.save)
-          commit('SET_TYPE_LIST', res.data.body.type)
-        })
+      return new Promise(resolve => {
+        dispatch('GET_TODAY_TIME_STAMP')
+        axios.get(`${process.env.VUE_APP_URL}/ledger/`)
+          .then(res => {
+            commit('SET_USER', res.data.body.name)
+            commit('SET_LEDGER', res.data.body.ledger)
+            commit('SET_SAVE', res.data.body.save)
+            commit('SET_TYPE_LIST', res.data.body.type)
+            resolve()
+          })
+      })
     },
 
     GET_TODAY_TIME_STAMP ({ commit }) {

@@ -100,9 +100,6 @@ export default {
               events: {
                 click: ({ point }) => {
                   this.$router.push({ name: 'Daily', params: { timestamp: point.x - 28800000 } })
-                },
-                mouseOver () {
-                  console.log('point=>', this)
                 }
               }
             },

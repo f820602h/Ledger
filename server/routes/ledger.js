@@ -104,9 +104,10 @@ router.get('/', function (req, res) {
         success: false
       })
     }
-  }).catch(() => {
+  }).catch((err) => {
     res.json({
-      success: false
+      success: false,
+      body: err
     })
   })
 })
