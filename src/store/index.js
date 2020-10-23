@@ -126,7 +126,7 @@ export default new Vuex.Store({
         month: whatDay.getMonth(),
         date: whatDay.getDate()
       }
-      const timestamp = new Date(`${today.year}-${today.month + 1}-${today.date}`).getTime()
+      const timestamp = new Date(`${today.year}/${today.month + 1}/${today.date}`).getTime()
       commit('SET_TODAY', timestamp)
       commit('SET_CURRENT_DATE', timestamp)
     },

@@ -98,7 +98,7 @@ export default {
       return total - (this.HowManyDay(this.datePick.year, this.datePick.month) + this.prevMonth)
     },
     dateTimestamp () {
-      return new Date(`${this.datePick.year}-${this.datePick.month + 1}-${this.datePick.date}`).getTime()
+      return new Date(`${this.datePick.year}/${this.datePick.month + 1}/${this.datePick.date}`).getTime()
     }
   },
   methods: {
