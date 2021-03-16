@@ -124,13 +124,9 @@ export default {
     let config = {
       year: 'numeric',
       month: '2-digit',
-      day: '2-digit',
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit'
+      day: '2-digit'
     }
-    this.newData.date = new Date(this.currentDate).toLocaleString('zh', config).split(' ')[0]
-    this.newData.time = new Date().toLocaleString('zh', config).split(' ')[1]
+    this.newData.date = new Date(this.currentDate).toLocaleString('zh', config)
   },
   computed: {
     ...mapState(['typeList', 'currentDate']),

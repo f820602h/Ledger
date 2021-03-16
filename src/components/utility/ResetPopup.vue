@@ -35,12 +35,6 @@ import { required, numeric } from 'vuelidate/lib/validators'
 import { mapActions } from 'vuex'
 export default {
   name: 'ResetPopup',
-  props: {
-    term: {
-      type: Object,
-      default: () => {}
-    }
-  },
   data () {
     return {
       newSave: ''

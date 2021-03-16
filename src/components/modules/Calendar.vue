@@ -101,6 +101,13 @@ export default {
       return new Date(`${this.datePick.year}/${this.datePick.month + 1}/${this.datePick.date}`).getTime()
     }
   },
+  watch: {
+    '$route' (val) {
+      this.datePick.year = new Date(val.params.timestamp).getFullYear()
+      this.datePick.month = new Date(val.params.timestamp).getMonth()
+      this.datePick.date = new Date(val.params.timestamp).getDate()
+    }
+  },
   methods: {
     goToDate () {
       this.$router.push({ name: 'Daily', params: { timestamp: this.dateTimestamp } })
