@@ -7,7 +7,7 @@ module.exports = {
   lintOnSave: true,
   outputDir: path.resolve(__dirname, "./server/dist"),
   chainWebpack: config => {
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV !== "development") {
       config
         .entry("app")
         .clear()
