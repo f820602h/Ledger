@@ -14,6 +14,8 @@ module.exports = {
       .add("webpack/hot/only-dev-server")
       .add(path.join(__dirname, "./src/main.js"));
     config.entry.app = ["babel-polyfill", "./src/main.js"];
-    config.plugin("hot").use(hmr);
+    if (process.env.NODE_ENV === "production") {
+      config.plugin("hot").use(hmr);
+    }
   }
 };
