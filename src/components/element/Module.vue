@@ -2,13 +2,13 @@
   <div>
     <div class="rounded overflow-hidden bg-white">
       <div class="px-4 border-bottom">
-        <slot name="head"/>
+        <slot name="head" />
       </div>
       <div>
-        <slot name="body"/>
+        <slot name="body" />
       </div>
       <div class="px-4 border-top" v-if="footer">
-        <slot name="footer"/>
+        <slot name="footer" />
       </div>
     </div>
   </div>
@@ -16,15 +16,14 @@
 
 <script>
 export default {
-  name: 'Module',
+  name: "Module",
   props: {
     footer: {
       type: Boolean,
       default: false
     }
   }
-}
+};
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

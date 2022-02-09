@@ -1,17 +1,34 @@
 <template>
   <div class="login d-flex justify-content-center align-items-center mt-5">
-    <div class="con d-flex flex-column justify-content-center align-items-center bg-white px-4 py-5 rounded shadow">
+    <div
+      class="con d-flex flex-column justify-content-center align-items-center bg-white px-4 py-5 rounded shadow"
+    >
       <h4 class="text-center">歡迎使用記帳本</h4>
       <p class="text-center">請先登入</p>
       <div class="input-group mt-4">
         <div class="input-group-prepend"><span class="input-group-text">帳號</span></div>
-        <input type="text" class="form-control" id="account" placeholder="電子信箱" v-model="$v.loginform.account.$model">
+        <input
+          type="text"
+          class="form-control"
+          id="account"
+          placeholder="電子信箱"
+          v-model="$v.loginform.account.$model"
+        />
       </div>
       <div class="input-group mt-4">
         <div class="input-group-prepend"><span class="input-group-text">密碼</span></div>
-        <input type="password" class="form-control" id="password" placeholder="密碼" v-model="$v.loginform.password.$model" @keydown.enter="login">
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          placeholder="密碼"
+          v-model="$v.loginform.password.$model"
+          @keydown.enter="login"
+        />
       </div>
-      <p class="error text-danger mt-3" v-if="$v.loginform.$invalid && $v.loginform.$dirty">請填妥您的帳號及密碼</p>
+      <p class="error text-danger mt-3" v-if="$v.loginform.$invalid && $v.loginform.$dirty">
+        請填妥您的帳號及密碼
+      </p>
       <button class="btn btn-sm btn-info mt-4 mx-auto" @click="login">登入</button>
       <a href="#" class="badge mt-2" @click="toggleSignUpPopup(true)">註冊帳號</a>
     </div>
@@ -20,19 +37,19 @@
 </template>
 
 <script>
-import SignUpPopup from '@/components/utility/SignUpPopup'
-import { required, email, alphaNum } from 'vuelidate/lib/validators'
-import { mapActions, mapState } from 'vuex'
+import SignUpPopup from "@/components/utility/SignUpPopup";
+import { required, email, alphaNum } from "vuelidate/lib/validators";
+import { mapActions, mapState } from "vuex";
 export default {
-  name: 'Login',
-  data () {
+  name: "Login",
+  data() {
     return {
       loginform: {
-        account: '',
-        password: ''
+        account: "",
+        password: ""
       },
       signUpPopupIsShow: false
-    }
+    };
   },
   validations: {
     loginform: {
@@ -50,29 +67,29 @@ export default {
     SignUpPopup
   },
   computed: {
-    ...mapState(['loginState', 'today', 'alertObj'])
+    ...mapState(["loginState", "today", "alertObj"])
   },
   watch: {
-    loginState (value) {
-      if (value) this.$router.push(`/daily/${this.today}`)
+    loginState(value) {
+      if (value) this.$router.push(`/daily/${this.today}`);
     },
-    alertObj (newVal, oldVal) {
-      if (newVal !== oldVal) this.$message(newVal)
+    alertObj(newVal, oldVal) {
+      if (newVal !== oldVal) this.$message(newVal);
     }
   },
   methods: {
-    ...mapActions(['LOGIN']),
-    toggleSignUpPopup (state) {
-      this.signUpPopupIsShow = state
+    ...mapActions(["LOGIN"]),
+    toggleSignUpPopup(state) {
+      this.signUpPopupIsShow = state;
     },
-    login () {
-      this.$v.loginform.$touch()
+    login() {
+      this.$v.loginform.$touch();
       if (!this.$v.loginform.$invalid) {
-        this.LOGIN(this.loginform)
+        this.LOGIN(this.loginform);
       }
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

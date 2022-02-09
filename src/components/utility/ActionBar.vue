@@ -11,19 +11,19 @@
 
 <script>
 export default {
-  name: 'ActionBar',
+  name: "ActionBar",
   methods: {
-    toggleAddPopup (state) {
-      this.$emit('toggleAddPopup', state)
+    toggleAddPopup(state) {
+      this.$emit("toggleAddPopup", state);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-.actionBar{
+.actionBar {
   height: 55px;
-  .add{
+  .add {
     background: #343a40;
     position: absolute;
     left: 0;
@@ -34,7 +34,7 @@ export default {
     margin: auto;
     cursor: pointer;
     transition: 0.5s;
-    &:hover{
+    &:hover {
       background: #272b30;
     }
   }
